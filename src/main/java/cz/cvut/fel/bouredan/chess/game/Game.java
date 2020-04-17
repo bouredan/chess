@@ -1,6 +1,6 @@
-package game;
+package cz.cvut.fel.bouredan.chess.game;
 
-import game.board.Board;
+import cz.cvut.fel.bouredan.chess.game.board.Board;
 
 public class Game {
 
@@ -18,4 +18,6 @@ public class Game {
     public void newGame() {
 
     }
+
+
 }

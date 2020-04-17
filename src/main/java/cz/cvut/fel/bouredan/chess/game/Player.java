@@ -1,6 +1,6 @@
-package game;
+package cz.cvut.fel.bouredan.chess.game;
 
-import game.piece.ChessPiece;
+import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
 
 import java.util.List;
 
