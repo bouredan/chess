@@ -4,21 +4,21 @@ import java.util.List;
 
 public class Board {
 
-    private final Square[][] squares;
+    private final Tile[][] tiles;
     public static final int DEFAULT_BOARD_SIZE = 8;
 
     public Board() {
-        this.squares = new Square[DEFAULT_BOARD_SIZE][DEFAULT_BOARD_SIZE];
+        this.tiles = new Tile[DEFAULT_BOARD_SIZE][DEFAULT_BOARD_SIZE];
     }
 
-    public Board(Square[][] squares) {
-        this.squares = squares;
+    public Board(Tile[][] tiles) {
+        this.tiles = tiles;
     }
 
     public List<Position> getPossibleMoves(Position position) {
-        Square square = squares[position.x][position.y];
+        Tile tile = tiles[position.x][position.y];
 
-        List<Position> positions = square.getChessPiece().possibleMoves(position);
+        List<Position> positions = tile.getChessPiece().possibleMoves(position);
 
         return positions;
     }

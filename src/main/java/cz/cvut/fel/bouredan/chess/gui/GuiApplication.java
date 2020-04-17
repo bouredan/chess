@@ -18,7 +18,8 @@ public class GuiApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary.fxml"));
+        stage.setTitle("Chess game");
+        scene = new Scene(loadFXML("board.fxml"));
         stage.setScene(scene);
         stage.show();
     }
@@ -27,4 +28,5 @@ public class GuiApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(GuiApplication.class.getResource(fxmlFile));
         return fxmlLoader.load();
     }
+
 }

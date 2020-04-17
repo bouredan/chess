@@ -1,0 +1,17 @@
+.tile {
+    -fx-max-width: 100;
+    -fx-max-height: 100;
+}
+
+.tile:hover {
+    -fx-border-width: 5px;
+    -fx-border-color: cornflowerblue;
+}
+
+.white-tile {
+    -fx-background-color: #f0d9b5;
+}
+
+.black-tile {
+    -fx-background-color: #b58863;
+}
