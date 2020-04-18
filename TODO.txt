@@ -1,0 +1,6 @@
+Konzultace -
+    - mohu pouzit knihovnu na parseJSON savu? kam ukladat savy - do resourcu?
+    - architekture aplikace ok? duplikace board kvůli oddělení gui?
+    - loggery? jake použít (slf4j)?
+    - module-info ok? warning s exportem module?
+    - tile samostatan trida?

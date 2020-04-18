@@ -2,6 +2,8 @@ package cz.cvut.fel.bouredan.chess.game;
 
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 
+import java.nio.file.Path;
+
 public class Game {
 
     private final Player whitePlayer;
@@ -15,9 +17,13 @@ public class Game {
         this.board = new Board();
     }
 
-    public void newGame() {
-
+    public Game(Path path) {
+        this.whitePlayer = new Player();
+        this.blackPlayer = new Player();
+        this.board = Board.loadBoardFromFile(path);
     }
 
-
+    public Board getBoard() {
+        return board;
+    }
 }

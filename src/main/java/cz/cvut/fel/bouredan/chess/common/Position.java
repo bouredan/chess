@@ -1,4 +1,4 @@
-package cz.cvut.fel.bouredan.chess.game.board;
+package cz.cvut.fel.bouredan.chess.common;
 
 public class Position {
 

@@ -1,4 +1,4 @@
-module org.openjfx {
+module cz.cvut.fel.bouredan.chess.gui {
     requires javafx.controls;
     requires javafx.fxml;
 

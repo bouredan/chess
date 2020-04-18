@@ -1,14 +1,18 @@
 package cz.cvut.fel.bouredan.chess.game.piece;
 
-import cz.cvut.fel.bouredan.chess.game.board.Position;
+import cz.cvut.fel.bouredan.chess.common.Position;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn extends ChessPiece {
 
+    public Pawn(boolean isWhite) {
+        super("P", isWhite);
+    }
+
     @Override
-    public List<Position> possibleMoves(Position currentPosition) {
+    public List<Position> getPossibleMoves(Position currentPosition) {
         List<Position> possiblePositions = new ArrayList<Position>();
         possiblePositions.add(currentPosition.copy(currentPosition.x, currentPosition.y + 1));
         return possiblePositions;

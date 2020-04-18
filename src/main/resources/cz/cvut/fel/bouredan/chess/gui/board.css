@@ -15,3 +15,7 @@
 .black-tile {
     -fx-background-color: #b58863;
 }
+
+.possible-move-tile {
+    -fx-background-color: yellow;
+}
