@@ -1,8 +1,9 @@
-package cz.cvut.fel.bouredan.chess.game.board;
+package cz.cvut.fel.bouredan.chess.game.flow;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.Game;
-import cz.cvut.fel.bouredan.chess.gui.BoardController;
+import cz.cvut.fel.bouredan.chess.game.board.Board;
+import cz.cvut.fel.bouredan.chess.gui.game.BoardController;
 
 import java.util.EventListener;
 import java.util.List;

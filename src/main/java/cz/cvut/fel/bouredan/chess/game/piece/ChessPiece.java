@@ -16,6 +16,8 @@ public abstract class ChessPiece {
 
     public abstract List<Position> getPossibleMoves(Position position);
 
+    public abstract String getStyle();
+
     public String getNotation() {
         return notation;
     }

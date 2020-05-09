@@ -1,8 +1,7 @@
 package cz.cvut.fel.bouredan.chess.game;
 
+import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
-
-import java.nio.file.Path;
 
 public class Game {
 
@@ -11,16 +10,15 @@ public class Game {
     private final Board board;
     private int turnNumber;
 
-    public Game() {
+    public Game(Board board) {
         this.whitePlayer = new Player();
         this.blackPlayer = new Player();
-        this.board = new Board();
+        this.board = board;
     }
 
-    public Game(Path path) {
-        this.whitePlayer = new Player();
-        this.blackPlayer = new Player();
-        this.board = Board.loadBoardFromFile(path);
+    public static Game createNewGame() {
+        Board board = GameSettings.buildDefaultStartingBoard();
+        return new Game(board);
     }
 
     public Board getBoard() {

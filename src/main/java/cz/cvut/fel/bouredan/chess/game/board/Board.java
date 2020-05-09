@@ -1,14 +1,9 @@
 package cz.cvut.fel.bouredan.chess.game.board;
 
-import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Scanner;
 
 import static cz.cvut.fel.bouredan.chess.common.GameSettings.BOARD_SIZE;
 
@@ -18,10 +13,18 @@ import static cz.cvut.fel.bouredan.chess.common.GameSettings.BOARD_SIZE;
 public class Board {
 
     private final Tile[][] tiles;
-    PrintStream printStream = System.out;
 
     public Board() {
-        this.tiles = buildClearBoard();
+        this.tiles = buildClearTiles();
+    }
+
+
+    public Board(Tile[][] tiles) {
+        this.tiles = tiles;
+    }
+
+    public Tile[][] getTiles() {
+        return tiles;
     }
 
     public List<Position> getPossibleMoves(Position position) {
@@ -33,41 +36,19 @@ public class Board {
         return tile.getChessPiece().getPossibleMoves(position);
     }
 
-    public boolean movePiece(Position initialPosition, Position targetPosition) {
+    public Board movePiece(Position initialPosition, Position targetPosition) {
         Tile initialTile = getTileAt(initialPosition);
-        Tile targetTile = getTileAt(targetPosition);
-
-        // TODO more checks or check in BoardManager
-        if (!initialTile.isOccupied()) {
-            return false;
-        }
-
-        targetTile.setChessPiece(initialTile.getChessPiece());
-        initialTile.setChessPiece(null);
-
-        System.out.println(targetTile.getNotation());
-        return true;
-    }
-
-    public static Board loadBoardFromFile(Path path) {
-        Board board = new Board();
-        try {
-            Scanner scanner = new Scanner(path);
-            while (scanner.hasNext()) {
-                ChessPiece chessPiece = GameSettings.createPieceWithNotation(scanner.next().charAt(0));
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return board;
+        Tile[][] newTiles = tiles.clone();
+        newTiles[initialPosition.x()][initialPosition.y()] = new Tile(initialPosition);
+        newTiles[targetPosition.x()][targetPosition.y()] = new Tile(targetPosition, initialTile.getChessPiece());
+        return new Board(newTiles);
     }
 
     private Tile getTileAt(Position position) {
-        return tiles[position.x][position.y];
+        return tiles[position.x()][position.y()];
     }
 
-    private Tile[][] buildClearBoard() {
+    private Tile[][] buildClearTiles() {
         Tile[][] tiles = new Tile[BOARD_SIZE][BOARD_SIZE];
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
@@ -77,33 +58,33 @@ public class Board {
         return tiles;
     }
 
-    private class Tile {
+    public static class Tile {
 
         private final Position position;
-        private ChessPiece chessPiece = null;
+        private final ChessPiece chessPiece;
 
         public Tile(Position position) {
-            this.position = position;
+            this(position, null);
         }
 
-        public boolean isOccupied() {
-            return chessPiece != null;
+        public Tile(Position position, ChessPiece chessPiece) {
+            super();
+            this.position = position;
+            this.chessPiece = chessPiece;
         }
 
         public ChessPiece getChessPiece() {
             return chessPiece;
         }
 
-        public void setChessPiece(ChessPiece chessPiece) {
-            this.chessPiece = chessPiece;
-            printStream.println(chessPiece.getNotation() + this.getNotation());
-        }
-
         public String getNotation() {
-            char file = (char) (position.x + 97);
-            String rank = String.valueOf(position.y);
+            char file = (char) (position.x() + 97);
+            String rank = String.valueOf(position.y());
             return file + rank;
         }
-    }
 
+        private boolean isOccupied() {
+            return chessPiece != null;
+        }
+    }
 }
