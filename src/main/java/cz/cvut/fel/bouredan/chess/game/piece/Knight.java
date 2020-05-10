@@ -4,17 +4,28 @@ import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Knight extends ChessPiece {
+
+    private static final int[] x = new int[]{-2, -2, -1, -1, 1, 1, 2, 2};
+    private static final int[] y = new int[]{-1, 1, -2, 2, -2, 2, -1, 1};
 
     public Knight(boolean isWhite) {
         super(isWhite, "N");
     }
 
     @Override
-    public List<Position> getPossibleMoves(Board board, Position piecePosition) {
-        return null;
+    public List<Position> getPossibleMoves(Board board, Position currentPosition) {
+        List<Position> possibleMoves = new ArrayList<>();
+        for (int i = 0; i < x.length; i++) {
+            Position move = currentPosition.copy(x[i], y[i]);
+            if (move.isWithinBoard() && !board.isTileOccupiedByColor(move, isWhite())) {
+                possibleMoves.add(move);
+            }
+        }
+        return possibleMoves;
     }
 
     @Override

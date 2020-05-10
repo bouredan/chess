@@ -17,11 +17,11 @@ public class Pawn extends ChessPiece {
     }
 
     @Override
-    public List<Position> getPossibleMoves(Board board, Position piecePosition) {
+    public List<Position> getPossibleMoves(Board board, Position currentPosition) {
         List<Position> possibleMoves = new ArrayList<>();
 
         // Normal moves
-        Position possibleMove = piecePosition.copy(0, moveDirection);
+        Position possibleMove = currentPosition.copy(0, moveDirection);
         if (board.isTileWithinBoardAndNotOccupied(possibleMove)) {
             possibleMoves.add(possibleMove);
 
@@ -33,12 +33,12 @@ public class Pawn extends ChessPiece {
             }
         }
         // Capture moves
-        possibleMove = piecePosition.copy(-1, moveDirection);
+        possibleMove = currentPosition.copy(-1, moveDirection);
         if (board.isTileOccupiedByColor(possibleMove, !isWhite())) {
             possibleMoves.add(possibleMove);
         }
 
-        possibleMove = piecePosition.copy(1, moveDirection);
+        possibleMove = currentPosition.copy(1, moveDirection);
         if (board.isTileOccupiedByColor(possibleMove, !isWhite())) {
             possibleMoves.add(possibleMove);
         }

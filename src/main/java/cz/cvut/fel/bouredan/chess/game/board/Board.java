@@ -56,6 +56,11 @@ public class Board {
         return tiles[position.x()][position.y()];
     }
 
+    public boolean isTileOccupied(Position position) {
+        return !isTileWithinBoardAndNotOccupied(position);
+    }
+
+
     public boolean isTileWithinBoardAndNotOccupied(Position position) {
         Tile tile = tileAt(position);
         return tile != null && !tile.isOccupied();

@@ -13,8 +13,8 @@ public class Bishop extends ChessPiece {
     }
 
     @Override
-    public List<Position> getPossibleMoves(Board board, Position piecePosition) {
-        return null;
+    public List<Position> getPossibleMoves(Board board, Position currentPosition) {
+        return collectPossibleDiagonalMoves(board, currentPosition);
     }
 
     @Override
