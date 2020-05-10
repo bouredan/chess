@@ -1,8 +1,8 @@
 package cz.cvut.fel.bouredan.chess.game.board;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
-import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,30 +28,42 @@ public class Board {
         return tiles;
     }
 
-    public List<Position> getPossibleMoves(Position position) {
-        Tile tile = getTileAt(position);
-
-        if (!tile.isOccupied()) {
-            return null;
+    public List<Position> getPossibleMoves(Position position, boolean isWhiteOnTurn) {
+        Tile tile = tileAt(position);
+        if (tile == null || !tile.isOccupiedByColor(isWhiteOnTurn)) {
+            return new ArrayList<>();
         }
         return tile
                 .getChessPiece()
-                .getPossibleMoves(position)
+                .getPossibleMoves(this, position)
                 .stream()
-                .filter(Position::isWithinBoard)
+                .filter(possibleMove -> possibleMove.isWithinBoard() && !tileAt(possibleMove).isOccupiedByColor(isWhiteOnTurn))
                 .collect(Collectors.toList());
     }
 
-    public Board movePiece(Position initialPosition, Position targetPosition) {
-        Tile initialTile = getTileAt(initialPosition);
+    public Board movePiece(Position from, Position to) {
+        Tile initialTile = tileAt(from);
         Tile[][] newTiles = tiles.clone();
-        newTiles[initialPosition.x()][initialPosition.y()] = new Tile(initialPosition);
-        newTiles[targetPosition.x()][targetPosition.y()] = new Tile(targetPosition, initialTile.getChessPiece());
+        newTiles[from.x()][from.y()] = new Tile(from);
+        newTiles[to.x()][to.y()] = new Tile(to, initialTile.getChessPiece());
         return new Board(newTiles);
     }
 
-    private Tile getTileAt(Position position) {
+    public Tile tileAt(Position position) {
+        if (position == null || !position.isWithinBoard()) {
+            return null;
+        }
         return tiles[position.x()][position.y()];
+    }
+
+    public boolean isTileWithinBoardAndNotOccupied(Position position) {
+        Tile tile = tileAt(position);
+        return tile != null && !tile.isOccupied();
+    }
+
+    public boolean isTileOccupiedByColor(Position position, boolean isWhite) {
+        Tile tile = tileAt(position);
+        return tile == null || tile.isOccupiedByColor(isWhite);
     }
 
     private Tile[][] buildClearTiles() {
@@ -62,39 +74,5 @@ public class Board {
             }
         }
         return tiles;
-    }
-
-    public static class Tile {
-
-        private final Position position;
-        private final ChessPiece chessPiece;
-
-        public Tile(Position position) {
-            this(position, null);
-        }
-
-        public Tile(Position position, ChessPiece chessPiece) {
-            super();
-            this.position = position;
-            this.chessPiece = chessPiece;
-        }
-
-        public Position getPosition() {
-            return position;
-        }
-
-        public ChessPiece getChessPiece() {
-            return chessPiece;
-        }
-
-        public String getNotation() {
-            char file = (char) (position.x() + 97);
-            String rank = String.valueOf(position.y());
-            return file + rank;
-        }
-
-        private boolean isOccupied() {
-            return chessPiece != null;
-        }
     }
 }

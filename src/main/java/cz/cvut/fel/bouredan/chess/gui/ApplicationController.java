@@ -1,7 +1,7 @@
 package cz.cvut.fel.bouredan.chess.gui;
 
 import cz.cvut.fel.bouredan.chess.game.Game;
-import cz.cvut.fel.bouredan.chess.gui.game.BoardController;
+import cz.cvut.fel.bouredan.chess.gui.game.GameController;
 import cz.cvut.fel.bouredan.chess.gui.game.BoardView;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,7 +22,7 @@ public class ApplicationController {
     @FXML
     private BoardView boardView;
 
-    private BoardController boardController;
+    private GameController gameController;
 
     @FXML
     private void initialize() {
@@ -33,8 +33,8 @@ public class ApplicationController {
     public void startNewGame() {
         logger.info("Started new game");
         Game game = Game.createNewGame();
-        BoardController boardController = new BoardController(boardView, game);
-        boardView.setBoardController(boardController);
+        GameController gameController = new GameController(boardView, game);
+        boardView.setGameController(gameController);
 
         boardView.displayBoard(game.getBoard());
     }

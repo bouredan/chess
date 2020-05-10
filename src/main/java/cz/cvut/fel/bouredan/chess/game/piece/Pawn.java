@@ -2,27 +2,50 @@ package cz.cvut.fel.bouredan.chess.game.piece;
 
 import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
+import cz.cvut.fel.bouredan.chess.game.board.Board;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Pawn extends ChessPiece {
 
-    private static final int STANDARD_MOVE_LENGTH = 1;
-    private static final int FIRST_MOVE_LENGTH = 2;
+    private final int moveDirection;
 
     public Pawn(boolean isWhite) {
-        super("P", isWhite);
+        super(isWhite, "P");
+        moveDirection = isWhite ? -1 : 1;
     }
 
     @Override
-    public List<Position> getPossibleMoves(Position currentPosition) {
-        List<Position> possiblePositions = new ArrayList<>();
+    public List<Position> getPossibleMoves(Board board, Position piecePosition) {
+        List<Position> possibleMoves = new ArrayList<>();
 
-        Position newPosition = currentPosition.move(0, isWhite() ? -STANDARD_MOVE_LENGTH : STANDARD_MOVE_LENGTH);
+        // Normal moves
+        Position possibleMove = piecePosition.copy(0, moveDirection);
+        if (board.isTileWithinBoardAndNotOccupied(possibleMove)) {
+            possibleMoves.add(possibleMove);
 
-        possiblePositions.add(newPosition);
-        return possiblePositions;
+            if (!hasMoved()) {
+                possibleMove = possibleMove.copy(0, moveDirection);
+                if (board.isTileWithinBoardAndNotOccupied(possibleMove)) {
+                    possibleMoves.add(possibleMove);
+                }
+            }
+        }
+        // Capture moves
+        possibleMove = piecePosition.copy(-1, moveDirection);
+        if (board.isTileOccupiedByColor(possibleMove, !isWhite())) {
+            possibleMoves.add(possibleMove);
+        }
+
+        possibleMove = piecePosition.copy(1, moveDirection);
+        if (board.isTileOccupiedByColor(possibleMove, !isWhite())) {
+            possibleMoves.add(possibleMove);
+        }
+
+        // TODO En passant
+
+        return possibleMoves;
     }
 
     @Override

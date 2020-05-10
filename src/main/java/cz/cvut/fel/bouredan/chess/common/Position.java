@@ -9,7 +9,7 @@ public class Position {
         this.y = y;
     }
 
-    public Position move(int xOffset, int yOffset) {
+    public Position copy(int xOffset, int yOffset) {
         return new Position(x + xOffset, y + yOffset);
     }
 

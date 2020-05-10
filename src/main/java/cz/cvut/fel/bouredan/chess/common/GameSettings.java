@@ -1,6 +1,7 @@
 package cz.cvut.fel.bouredan.chess.common;
 
 import cz.cvut.fel.bouredan.chess.game.board.Board;
+import cz.cvut.fel.bouredan.chess.game.board.Tile;
 import cz.cvut.fel.bouredan.chess.game.piece.*;
 
 public class GameSettings {
@@ -50,31 +51,31 @@ public class GameSettings {
     }
 
     public static Board buildDefaultStartingBoard() {
-        Board.Tile[][] tiles = new Board.Tile[BOARD_SIZE][BOARD_SIZE];
+        Tile[][] tiles = new Tile[BOARD_SIZE][BOARD_SIZE];
 
         buildStartingBoardSide(tiles, 1, 0, false);
         buildStartingBoardSide(tiles, 6, 7, true);
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
                 if (tiles[x][y] == null) {
-                    tiles[x][y] = new Board.Tile(new Position(x, y));
+                    tiles[x][y] = new Tile(new Position(x, y));
                 }
             }
         }
         return new Board(tiles);
     }
 
-    private static void buildStartingBoardSide(Board.Tile[][] tiles, int pawnRank, int otherPiecesRank, boolean isWhite) {
+    private static void buildStartingBoardSide(Tile[][] tiles, int pawnRank, int otherPiecesRank, boolean isWhite) {
         for (int x = 0; x < BOARD_SIZE; x++) {
-            tiles[x][pawnRank] = new Board.Tile(new Position(x, pawnRank), new Pawn(isWhite));
+            tiles[x][pawnRank] = new Tile(new Position(x, pawnRank), new Pawn(isWhite));
         }
-        tiles[0][otherPiecesRank] = new Board.Tile(new Position(0, otherPiecesRank), new Rook(isWhite));
-        tiles[1][otherPiecesRank] = new Board.Tile(new Position(1, otherPiecesRank), new Bishop(isWhite));
-        tiles[2][otherPiecesRank] = new Board.Tile(new Position(2, otherPiecesRank), new Knight(isWhite));
-        tiles[3][otherPiecesRank] = new Board.Tile(new Position(3, otherPiecesRank), new Queen(isWhite));
-        tiles[4][otherPiecesRank] = new Board.Tile(new Position(4, otherPiecesRank), new King(isWhite));
-        tiles[5][otherPiecesRank] = new Board.Tile(new Position(5, otherPiecesRank), new Bishop(isWhite));
-        tiles[6][otherPiecesRank] = new Board.Tile(new Position(6, otherPiecesRank), new Knight(isWhite));
-        tiles[7][otherPiecesRank] = new Board.Tile(new Position(7, otherPiecesRank), new Rook(isWhite));
+        tiles[0][otherPiecesRank] = new Tile(new Position(0, otherPiecesRank), new Rook(isWhite));
+        tiles[1][otherPiecesRank] = new Tile(new Position(1, otherPiecesRank), new Bishop(isWhite));
+        tiles[2][otherPiecesRank] = new Tile(new Position(2, otherPiecesRank), new Knight(isWhite));
+        tiles[3][otherPiecesRank] = new Tile(new Position(3, otherPiecesRank), new Queen(isWhite));
+        tiles[4][otherPiecesRank] = new Tile(new Position(4, otherPiecesRank), new King(isWhite));
+        tiles[5][otherPiecesRank] = new Tile(new Position(5, otherPiecesRank), new Bishop(isWhite));
+        tiles[6][otherPiecesRank] = new Tile(new Position(6, otherPiecesRank), new Knight(isWhite));
+        tiles[7][otherPiecesRank] = new Tile(new Position(7, otherPiecesRank), new Rook(isWhite));
     }
 }
