@@ -9,7 +9,7 @@ public class Position {
         this.y = y;
     }
 
-    public Position copy(int xOffset, int yOffset) {
+    public Position move(int xOffset, int yOffset) {
         return new Position(x + xOffset, y + yOffset);
     }
 
@@ -19,6 +19,10 @@ public class Position {
 
     public int y() {
         return y;
+    }
+
+    public boolean isWithinBoard() {
+        return x >= 0 && x < 8 && y >= 0 && y < 8;
     }
 
     @Override

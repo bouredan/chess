@@ -19,7 +19,7 @@ public class Pawn extends ChessPiece {
     public List<Position> getPossibleMoves(Position currentPosition) {
         List<Position> possiblePositions = new ArrayList<>();
 
-        Position newPosition = currentPosition.copy(currentPosition.x(), isWhite() ? currentPosition.y() + STANDARD_MOVE_LENGTH : currentPosition.y() - STANDARD_MOVE_LENGTH);
+        Position newPosition = currentPosition.move(0, isWhite() ? -STANDARD_MOVE_LENGTH : STANDARD_MOVE_LENGTH);
 
         possiblePositions.add(newPosition);
         return possiblePositions;

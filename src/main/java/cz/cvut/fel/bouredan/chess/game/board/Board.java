@@ -4,6 +4,7 @@ import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static cz.cvut.fel.bouredan.chess.common.GameSettings.BOARD_SIZE;
 
@@ -33,7 +34,12 @@ public class Board {
         if (!tile.isOccupied()) {
             return null;
         }
-        return tile.getChessPiece().getPossibleMoves(position);
+        return tile
+                .getChessPiece()
+                .getPossibleMoves(position)
+                .stream()
+                .filter(Position::isWithinBoard)
+                .collect(Collectors.toList());
     }
 
     public Board movePiece(Position initialPosition, Position targetPosition) {
@@ -71,6 +77,10 @@ public class Board {
             super();
             this.position = position;
             this.chessPiece = chessPiece;
+        }
+
+        public Position getPosition() {
+            return position;
         }
 
         public ChessPiece getChessPiece() {

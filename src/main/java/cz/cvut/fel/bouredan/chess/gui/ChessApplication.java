@@ -24,15 +24,19 @@ public class ChessApplication extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         stage.setTitle("Chess game");
         stage.setScene(loadSceneFromFxml());
         stage.show();
     }
 
-    private Scene loadSceneFromFxml() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("root.fxml"));
-        Parent root = fxmlLoader.load();
-        return new Scene(root);
+    private Scene loadSceneFromFxml() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("root.fxml"));
+            Parent root = fxmlLoader.load();
+            return new Scene(root);
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

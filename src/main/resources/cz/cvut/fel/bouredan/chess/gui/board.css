@@ -1,0 +1,74 @@
+.tile {
+    -fx-pref-width: 100;
+    -fx-pref-height: 100;
+    -fx-background-size: cover;
+}
+
+.tile:hover {
+    -fx-border-width: 5px;
+    -fx-border-color: cornflowerblue;
+}
+
+.white-tile {
+    -fx-background-color: #f0d9b5;
+}
+
+.black-tile {
+    -fx-background-color: #b58863;
+}
+
+.possible-move-tile {
+    -fx-background-color: yellow;
+}
+
+/* White pieces classes */
+
+.white-pawn {
+    -fx-background-image: url("pieces/WP.png");
+}
+
+.white-rook {
+    -fx-background-image: url("pieces/WR.png");
+}
+
+.white-knight {
+    -fx-background-image: url("pieces/WN.png");
+}
+
+.white-bishop {
+    -fx-background-image: url("pieces/WB.png");
+}
+
+.white-queen {
+    -fx-background-image: url("pieces/WQ.png");
+}
+
+.white-king {
+    -fx-background-image: url("pieces/WK.png");
+}
+
+.black-pawn {
+    -fx-background-image: url("pieces/BP.png");
+}
+
+/* Black pieces classes */
+
+.black-rook {
+    -fx-background-image: url("pieces/BR.png");
+}
+
+.black-knight {
+    -fx-background-image: url("pieces/BN.png");
+}
+
+.black-bishop {
+    -fx-background-image: url("pieces/BB.png");
+}
+
+.black-queen {
+    -fx-background-image: url("pieces/BQ.png");
+}
+
+.black-king {
+    -fx-background-image: url("pieces/BK.png");
+}
