@@ -66,7 +66,7 @@ public abstract class ChessPiece {
 
     private List<Position> collectPossibleMovesInDirection(Board board, Position currentPosition, int xOffset, int yOffset) {
         List<Position> possibleMoves = new ArrayList<>();
-        for (Position move = currentPosition.copy(xOffset, yOffset); move.isWithinBoard(); move = move.copy(xOffset,yOffset)) {
+        for (Position move = currentPosition.copy(xOffset, yOffset); move.isWithinBoard(); move = move.copy(xOffset, yOffset)) {
             if (board.isTileOccupied(move)) {
                 if (board.tileAt(move).isOccupiedByColor(!isWhite())) {
                     possibleMoves.add(move);

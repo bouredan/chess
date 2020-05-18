@@ -24,12 +24,14 @@ public class Game {
         boardHistory.add(board);
     }
 
-    public boolean makeTurn(Position from, Position to) {
+    public boolean makeMove(Position from, Position to) {
         List<Position> possibleMoves = board.getPossibleMoves(from, isWhiteOnTurn());
         if (!possibleMoves.contains(to)) {
             return false;
         }
+
         this.board = board.movePiece(from, to);
+
         nextTurn();
         return true;
     }
@@ -45,6 +47,10 @@ public class Game {
 
     public Board getBoard() {
         return board;
+    }
+
+    public int getTurnNumber() {
+        return turnNumber;
     }
 
     private void nextTurn() {

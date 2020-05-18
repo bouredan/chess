@@ -15,7 +15,7 @@ import static cz.cvut.fel.bouredan.chess.common.GameSettings.*;
 public class BoardView extends GridPane {
 
     private final TileButton[][] tileButtons = new TileButton[BOARD_SIZE][BOARD_SIZE];
-    private GameController gameController;
+    private BoardController boardController;
 
     public BoardView() {
         super();
@@ -42,8 +42,8 @@ public class BoardView extends GridPane {
         }
     }
 
-    public void setGameController(GameController gameController) {
-        this.gameController = gameController;
+    public void setBoardController(BoardController boardController) {
+        this.boardController = boardController;
     }
 
     private void addTileButton(Position position, ChessPiece chessPiece) {
@@ -62,7 +62,7 @@ public class BoardView extends GridPane {
             this.position = position;
             this.chessPiece = chessPiece;
 
-            if (gameController != null) {
+            if (boardController != null) {
                 addEventHandlers();
             }
             initStyles(position);
@@ -86,7 +86,7 @@ public class BoardView extends GridPane {
         private void addEventHandlers() {
             setOnMousePressed(event -> {
                 System.out.format("Tile %c%d (x%d y%d) clicked.%n", Utils.ASCII_CAPITAL_ALPHABET_START + position.x(), 8 - position.y(), position.x(), position.y());
-                gameController.handleClick(getPosition());
+                boardController.handleClick(getPosition());
             });
         }
     }

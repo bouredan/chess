@@ -1,6 +1,7 @@
 package cz.cvut.fel.bouredan.chess.game.board;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
+import cz.cvut.fel.bouredan.chess.game.piece.King;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,12 @@ public class Board {
         this.tiles = tiles;
     }
 
-    public Tile[][] getTiles() {
-        return tiles;
+    public Board movePiece(Position from, Position to) {
+        Tile initialTile = tileAt(from);
+        Tile[][] newTiles = copyTiles();
+        newTiles[from.x()][from.y()] = new Tile(from);
+        newTiles[to.x()][to.y()] = new Tile(to, initialTile.getChessPiece());
+        return new Board(newTiles);
     }
 
     public List<Position> getPossibleMoves(Position position, boolean isWhiteOnTurn) {
@@ -37,16 +42,12 @@ public class Board {
                 .getChessPiece()
                 .getPossibleMoves(this, position)
                 .stream()
-                .filter(possibleMove -> possibleMove.isWithinBoard() && !tileAt(possibleMove).isOccupiedByColor(isWhiteOnTurn))
+                .filter(possibleMove -> !movePiece(position, possibleMove).isKingInCheck(isWhiteOnTurn))
                 .collect(Collectors.toList());
     }
 
-    public Board movePiece(Position from, Position to) {
-        Tile initialTile = tileAt(from);
-        Tile[][] newTiles = tiles.clone();
-        newTiles[from.x()][from.y()] = new Tile(from);
-        newTiles[to.x()][to.y()] = new Tile(to, initialTile.getChessPiece());
-        return new Board(newTiles);
+    public boolean isKingInCheck(boolean isWhite) {
+        return getPiecesAttackingKing(isWhite).size() > 0;
     }
 
     public Tile tileAt(Position position) {
@@ -57,18 +58,53 @@ public class Board {
     }
 
     public boolean isTileOccupied(Position position) {
-        return !isTileWithinBoardAndNotOccupied(position);
+        Tile tile = tileAt(position);
+        return tile != null && tile.isOccupied();
     }
 
+    public boolean isTileOccupiedByColor(Position position, boolean isWhite) {
+        Tile tile = tileAt(position);
+        return tile != null && tile.isOccupiedByColor(isWhite);
+    }
 
     public boolean isTileWithinBoardAndNotOccupied(Position position) {
         Tile tile = tileAt(position);
         return tile != null && !tile.isOccupied();
     }
 
-    public boolean isTileOccupiedByColor(Position position, boolean isWhite) {
+    public boolean isTileWithinBoardAndNotOccupiedByColor(Position position, boolean isWhite) {
         Tile tile = tileAt(position);
-        return tile == null || tile.isOccupiedByColor(isWhite);
+        return tile != null && !tile.isOccupiedByColor(isWhite);
+    }
+
+    public Tile[][] getTiles() {
+        return tiles;
+    }
+
+    private List<Position> getPiecesAttackingKing(boolean isWhiteKing) {
+        List<Position> piecesAttackingKing = new ArrayList<>();
+        Position kingPosition = getKingPosition(isWhiteKing);
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                Tile tile = tileAt(new Position(x, y));
+                if (tile.isOccupied() && tile.getChessPiece().canMoveTo(this, tile.getPosition(), kingPosition)) {
+                    piecesAttackingKing.add(tile.getPosition());
+                }
+            }
+        }
+        return piecesAttackingKing;
+    }
+
+    private Position getKingPosition(boolean isWhite) {
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                Tile tile = tileAt(new Position(x, y));
+                if (tile.isOccupiedByColor(isWhite) && tile.getChessPiece() instanceof King) {
+                    return tile.getPosition();
+                }
+            }
+        }
+        return null;
     }
 
     private Tile[][] buildClearTiles() {
@@ -76,6 +112,16 @@ public class Board {
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
                 tiles[x][y] = new Tile(new Position(x, y));
+            }
+        }
+        return tiles;
+    }
+
+    private Tile[][] copyTiles() {
+        Tile[][] tiles = new Tile[BOARD_SIZE][BOARD_SIZE];
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                tiles[x][y] = new Tile(new Position(x, y), this.tiles[x][y].getChessPiece());
             }
         }
         return tiles;

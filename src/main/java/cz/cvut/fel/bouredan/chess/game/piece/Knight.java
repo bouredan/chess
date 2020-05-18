@@ -21,7 +21,7 @@ public class Knight extends ChessPiece {
         List<Position> possibleMoves = new ArrayList<>();
         for (int i = 0; i < x.length; i++) {
             Position move = currentPosition.copy(x[i], y[i]);
-            if (move.isWithinBoard() && !board.isTileOccupiedByColor(move, isWhite())) {
+            if (board.isTileWithinBoardAndNotOccupiedByColor(move, isWhite())) {
                 possibleMoves.add(move);
             }
         }
