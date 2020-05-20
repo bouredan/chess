@@ -1,5 +1,6 @@
 package cz.cvut.fel.bouredan.chess.gui;
 
+import cz.cvut.fel.bouredan.chess.game.PgnParser;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class ChessApplication extends Application {
 
@@ -20,7 +22,7 @@ public class ChessApplication extends Application {
     private Button startButton;
 
     public static void main(final String[] args) {
-        launch();
+        PgnParser.loadGame(Paths.get("sample.pgn"));
     }
 
     @Override
