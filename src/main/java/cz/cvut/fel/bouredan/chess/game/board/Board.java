@@ -5,6 +5,7 @@ import cz.cvut.fel.bouredan.chess.game.piece.King;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static cz.cvut.fel.bouredan.chess.common.GameSettings.BOARD_SIZE;
@@ -16,13 +17,12 @@ public class Board {
 
     private final Tile[][] tiles;
 
-    public Board() {
-        this.tiles = buildClearTiles();
-    }
-
-
     public Board(Tile[][] tiles) {
         this.tiles = tiles;
+    }
+
+    public static Board buildClearBoard() {
+        return new Board();
     }
 
     public Board movePiece(Position from, Position to) {
@@ -81,30 +81,34 @@ public class Board {
         return tiles;
     }
 
-    private List<Position> getPiecesAttackingKing(boolean isWhiteKing) {
-        List<Position> piecesAttackingKing = new ArrayList<>();
-        Position kingPosition = getKingPosition(isWhiteKing);
+    public List<Position> getPositionsWithPredicate(Predicate<Tile> tilePredicate) {
+        List<Position> positions = new ArrayList<>();
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
                 Tile tile = tileAt(new Position(x, y));
-                if (tile.isOccupied() && tile.getChessPiece().canMoveTo(this, tile.getPosition(), kingPosition)) {
-                    piecesAttackingKing.add(tile.getPosition());
+                if (tilePredicate.test(tile)) {
+                    positions.add(tile.getPosition());
                 }
             }
         }
-        return piecesAttackingKing;
+        return positions;
+    }
+
+    private Board() {
+        this.tiles = buildClearTiles();
+    }
+
+    private List<Position> getPiecesAttackingKing(boolean isWhiteKing) {
+        Position kingPosition = getKingPosition(isWhiteKing);
+        return getPositionsWithPredicate(tile -> {
+            return tile.isOccupied() && tile.getChessPiece().canMoveTo(this, tile.getPosition(), kingPosition);
+        });
     }
 
     private Position getKingPosition(boolean isWhite) {
-        for (int x = 0; x < BOARD_SIZE; x++) {
-            for (int y = 0; y < BOARD_SIZE; y++) {
-                Tile tile = tileAt(new Position(x, y));
-                if (tile.isOccupiedByColor(isWhite) && tile.getChessPiece() instanceof King) {
-                    return tile.getPosition();
-                }
-            }
-        }
-        return null;
+        return getPositionsWithPredicate(tile -> {
+            return tile.isOccupiedByColor(isWhite) && tile.getChessPiece() instanceof King;
+        }).get(0);
     }
 
     private Tile[][] buildClearTiles() {

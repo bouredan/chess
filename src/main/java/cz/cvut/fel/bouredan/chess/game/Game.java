@@ -30,7 +30,8 @@ public class Game {
             return false;
         }
 
-        this.board = board.movePiece(from, to);
+        board = board.movePiece(from, to);
+        board.tileAt(to).getChessPiece().setHasMovedToTrue();
 
         nextTurn();
         return true;

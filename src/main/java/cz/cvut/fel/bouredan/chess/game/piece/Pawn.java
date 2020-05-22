@@ -12,8 +12,8 @@ public class Pawn extends ChessPiece {
     private final int moveDirection;
 
     public Pawn(boolean isWhite) {
-        super(isWhite, "P");
-        moveDirection = isWhite ? -1 : 1;
+        super(isWhite, "");
+        moveDirection = isWhite ? 1 : -1;
     }
 
     @Override

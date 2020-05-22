@@ -10,6 +10,8 @@ public class GameSettings {
     public static final int BOARD_SIZE = 8;
 
     // CSS classes
+    public static final String FILE_LABEL_CLASS = "file-label";
+    public static final String RANK_LABEL_CLASS = "rank-label";
     public static final String TILE_CLASS = "tile";
     public static final String WHITE_TILE_CLASS = "white-tile";
     public static final String BLACK_TILE_CLASS = "black-tile";
@@ -30,31 +32,20 @@ public class GameSettings {
     public static final String BLACK_QUEEN_CLASS = "black-queen";
     public static final String BLACK_KING_CLASS = "black-king";
 
-    public static ChessPiece createPieceWithNotation(Character notation) {
-        switch (notation) {
-            case 'K':
-            case 'k':
-            case 'Q':
-            case 'q':
-            case 'R':
-            case 'r':
-            case 'B':
-            case 'b':
-            case 'N':
-            case 'n':
-            case 'P':
-            case 'p':
-                return new Pawn(Character.isUpperCase(notation));
-            default:
-                throw new RuntimeException("Notation '" + notation + "' not recognized");
-        }
-    }
-
+/*    private static final Map<Class, String> PIECE_NOTATION_MAP = Map.of(
+            King.class, "K",
+            Queen.class, "Q",
+            Bishop.class, "B",
+            Knight.class, "N",
+            Rook.class, "R",
+            Pawn.class, ""
+    );
+*/
     public static Board buildDefaultStartingBoard() {
         Tile[][] tiles = new Tile[BOARD_SIZE][BOARD_SIZE];
 
-        buildStartingBoardSide(tiles, 1, 0, false);
-        buildStartingBoardSide(tiles, 6, 7, true);
+        buildStartingBoardSide(tiles, 1, 0, true);
+        buildStartingBoardSide(tiles, 6, 7, false);
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
                 if (tiles[x][y] == null) {
@@ -70,8 +61,8 @@ public class GameSettings {
             tiles[x][pawnRank] = new Tile(new Position(x, pawnRank), new Pawn(isWhite));
         }
         tiles[0][otherPiecesRank] = new Tile(new Position(0, otherPiecesRank), new Rook(isWhite));
-        tiles[1][otherPiecesRank] = new Tile(new Position(1, otherPiecesRank), new Bishop(isWhite));
-        tiles[2][otherPiecesRank] = new Tile(new Position(2, otherPiecesRank), new Knight(isWhite));
+        tiles[1][otherPiecesRank] = new Tile(new Position(1, otherPiecesRank), new Knight(isWhite));
+        tiles[2][otherPiecesRank] = new Tile(new Position(2, otherPiecesRank), new Bishop(isWhite));
         tiles[3][otherPiecesRank] = new Tile(new Position(3, otherPiecesRank), new Queen(isWhite));
         tiles[4][otherPiecesRank] = new Tile(new Position(4, otherPiecesRank), new King(isWhite));
         tiles[5][otherPiecesRank] = new Tile(new Position(5, otherPiecesRank), new Bishop(isWhite));

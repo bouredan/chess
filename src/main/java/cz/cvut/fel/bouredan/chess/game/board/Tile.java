@@ -7,6 +7,7 @@ public class Tile {
 
     private final Position position;
     private final ChessPiece chessPiece;
+    private String notation;
 
     public Tile(Position position) {
         this(position, null);
@@ -16,6 +17,7 @@ public class Tile {
         super();
         this.position = position;
         this.chessPiece = chessPiece;
+        this.notation = getNotation();
     }
 
     public Position getPosition() {
@@ -27,8 +29,8 @@ public class Tile {
     }
 
     public String getNotation() {
-        char file = (char) (position.x() + 97);
-        String rank = String.valueOf(position.y());
+        char file = (char) (position.x() + 'a');
+        String rank = String.valueOf(position.y() + 1);
         return file + rank;
     }
 

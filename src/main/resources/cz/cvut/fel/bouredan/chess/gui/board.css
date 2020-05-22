@@ -1,6 +1,18 @@
+.file-label {
+    -fx-pref-width: 90;
+    -fx-pref-height: 20;
+    -fx-alignment: center;
+}
+
+.rank-label {
+    -fx-pref-width: 20;
+    -fx-pref-height: 90;
+    -fx-alignment: center;
+}
+
 .tile {
-    -fx-pref-width: 100;
-    -fx-pref-height: 100;
+    -fx-pref-width: 90;
+    -fx-pref-height: 90;
     -fx-background-size: cover;
 }
 

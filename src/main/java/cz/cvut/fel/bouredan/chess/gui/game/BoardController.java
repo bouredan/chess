@@ -2,11 +2,15 @@ package cz.cvut.fel.bouredan.chess.gui.game;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.Game;
+import javafx.fxml.FXML;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class BoardController {
+
+    private static final Logger logger = Logger.getLogger(BoardController.class.getName());
 
     private final BoardView boardView;
     private final Game game;
@@ -17,6 +21,11 @@ public class BoardController {
     public BoardController(BoardView boardView, Game game) {
         this.boardView = boardView;
         this.game = game;
+    }
+
+    @FXML
+    private void initialize() {
+        logger.info("Board controller initialized.");
     }
 
     public void handleClick(Position clickedPosition) {

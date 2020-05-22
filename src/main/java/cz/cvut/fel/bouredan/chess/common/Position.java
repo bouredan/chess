@@ -1,5 +1,7 @@
 package cz.cvut.fel.bouredan.chess.common;
 
+import static cz.cvut.fel.bouredan.chess.common.GameSettings.BOARD_SIZE;
+
 public class Position {
 
     private final int x, y;
@@ -13,6 +15,10 @@ public class Position {
         return new Position(x + xOffset, y + yOffset);
     }
 
+    public Position invertY() {
+        return new Position(x, BOARD_SIZE - y - 1);
+    }
+
     public int x() {
         return x;
     }
@@ -22,7 +28,12 @@ public class Position {
     }
 
     public boolean isWithinBoard() {
-        return x >= 0 && x < 8 && y >= 0 && y < 8;
+        return x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE;
+    }
+
+    public String getPositionNotation() {
+        char file = (char) ('a' + x);
+        return Character.toString(file) + y;
     }
 
     @Override
