@@ -1,6 +1,7 @@
 package cz.cvut.fel.bouredan.chess.game.board;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
+import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
 import cz.cvut.fel.bouredan.chess.game.piece.King;
 
 import java.util.ArrayList;
@@ -26,10 +27,11 @@ public class Board {
     }
 
     public Board movePiece(Position from, Position to) {
-        Tile initialTile = tileAt(from);
         Tile[][] newTiles = copyTiles();
+        Tile tileFrom = tileAt(from);
+
         newTiles[from.x()][from.y()] = new Tile(from);
-        newTiles[to.x()][to.y()] = new Tile(to, initialTile.getChessPiece());
+        newTiles[to.x()][to.y()] = new Tile(to, tileFrom.getChessPiece());
         return new Board(newTiles);
     }
 
@@ -38,16 +40,24 @@ public class Board {
         if (tile == null || !tile.isOccupiedByColor(isWhiteOnTurn)) {
             return new ArrayList<>();
         }
-        return tile
-                .getChessPiece()
-                .getPossibleMoves(this, position)
+        ChessPiece chessPiece = tile.getChessPiece();
+        List<Position> possibleMoves =  tile.getChessPiece().getPossibleMoves(this, position);
+        if (chessPiece instanceof King && !chessPiece.hasMoved()) {
+            possibleMoves.addAll(((King) chessPiece).getPossibleCastlingMoves(this, position));
+        }
+        return possibleMoves
                 .stream()
                 .filter(possibleMove -> !movePiece(position, possibleMove).isKingInCheck(isWhiteOnTurn))
                 .collect(Collectors.toList());
     }
 
     public boolean isKingInCheck(boolean isWhite) {
-        return getPiecesAttackingKing(isWhite).size() > 0;
+        Position kingPosition = getKingPosition(isWhite);
+        return getPiecesAttackingPosition(kingPosition, !isWhite).size() > 0;
+    }
+
+    public boolean isTileAttacked(Position attackedPosition, boolean isWhiteAttacker) {
+        return getPiecesAttackingPosition(attackedPosition, isWhiteAttacker).size() > 0;
     }
 
     public Tile tileAt(Position position) {
@@ -98,17 +108,14 @@ public class Board {
         this.tiles = buildClearTiles();
     }
 
-    private List<Position> getPiecesAttackingKing(boolean isWhiteKing) {
-        Position kingPosition = getKingPosition(isWhiteKing);
-        return getPositionsWithPredicate(tile -> {
-            return tile.isOccupied() && tile.getChessPiece().canMoveTo(this, tile.getPosition(), kingPosition);
-        });
+    private List<Position> getPiecesAttackingPosition(Position attackedPosition, boolean isWhiteAttacker) {
+        return getPositionsWithPredicate(tile -> tile.isOccupiedByColor(isWhiteAttacker) &&
+                tile.getChessPiece().canMoveTo(this, tile.getPosition(), attackedPosition));
     }
 
     private Position getKingPosition(boolean isWhite) {
-        return getPositionsWithPredicate(tile -> {
-            return tile.isOccupiedByColor(isWhite) && tile.getChessPiece() instanceof King;
-        }).get(0);
+        return getPositionsWithPredicate(tile -> tile.isOccupiedByColor(isWhite) &&
+                tile.getChessPiece() instanceof King).get(0);
     }
 
     private Tile[][] buildClearTiles() {

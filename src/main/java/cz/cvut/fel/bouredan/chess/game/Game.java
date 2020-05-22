@@ -3,6 +3,8 @@ package cz.cvut.fel.bouredan.chess.game;
 import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
+import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
+import cz.cvut.fel.bouredan.chess.game.piece.King;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +31,14 @@ public class Game {
         if (!possibleMoves.contains(to)) {
             return false;
         }
+        ChessPiece movedPiece = board.tileAt(from).getChessPiece();
 
         board = board.movePiece(from, to);
-        board.tileAt(to).getChessPiece().setHasMovedToTrue();
+        movedPiece.setHasMovedToTrue();
+
+        if (movedPiece instanceof King && Math.abs(from.x() - to.x()) == 2) {
+            finishCastlingIfDone(from, to);
+        }
 
         nextTurn();
         return true;
@@ -58,5 +65,18 @@ public class Game {
         boardHistory.add(board);
         playerOnTurn = isWhiteOnTurn() ? blackPlayer : whitePlayer;
         turnNumber++;
+    }
+
+    private void finishCastlingIfDone(Position kingMoveFrom, Position kingMoveTo) {
+        int xOffset = kingMoveFrom.x() - kingMoveTo.x();
+        if (xOffset == 2) {
+            Position rookPosition = new Position(0, kingMoveTo.y());
+            board.tileAt(rookPosition).getChessPiece().setHasMovedToTrue();
+            board = board.movePiece(rookPosition, kingMoveTo.copy(1, 0));
+        } else if (xOffset == -2) {
+            Position rookPosition = new Position(7, kingMoveTo.y());
+            board.tileAt(rookPosition).getChessPiece().setHasMovedToTrue();
+            board = board.movePiece(rookPosition, kingMoveTo.copy(-1, 0));
+        }
     }
 }
