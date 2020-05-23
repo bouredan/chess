@@ -5,6 +5,7 @@ import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
 import cz.cvut.fel.bouredan.chess.game.piece.King;
+import cz.cvut.fel.bouredan.chess.game.piece.Pawn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,10 @@ public class Game {
     }
 
     public boolean makeMove(Position from, Position to) {
+        return makeMove(from, to, null);
+    }
+
+    public boolean makeMove(Position from, Position to, ChessPiece promotePawnTo) {
         List<Position> possibleMoves = board.getPossibleMoves(from, isWhiteOnTurn());
         if (!possibleMoves.contains(to)) {
             return false;
@@ -36,8 +41,14 @@ public class Game {
         board = board.movePiece(from, to);
         movedPiece.setHasMovedToTrue();
 
+        // Castling
         if (movedPiece instanceof King && Math.abs(from.x() - to.x()) == 2) {
             finishCastlingIfDone(from, to);
+        }
+
+        // Pawn promotion
+        if (promotePawnTo != null && movedPiece instanceof Pawn && to.y() == 7 || to.y() == 0) {
+            //promotePawn(to, promotePawnTo);
         }
 
         nextTurn();

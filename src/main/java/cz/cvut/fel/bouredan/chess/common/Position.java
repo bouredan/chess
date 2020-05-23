@@ -32,8 +32,15 @@ public class Position {
     }
 
     public String getPositionNotation() {
-        char file = (char) ('a' + x);
-        return Character.toString(file) + y;
+        return new String(new char[]{getFile(), getRank()});
+    }
+
+    public char getFile() {
+        return (char) ('a' + x);
+    }
+
+    public char getRank() {
+        return (char) ('0' + y);
     }
 
     @Override

@@ -42,9 +42,12 @@ public class Board {
         }
         ChessPiece chessPiece = tile.getChessPiece();
         List<Position> possibleMoves =  tile.getChessPiece().getPossibleMoves(this, position);
+
+        // Castling
         if (chessPiece instanceof King && !chessPiece.hasMoved()) {
             possibleMoves.addAll(((King) chessPiece).getPossibleCastlingMoves(this, position));
         }
+
         return possibleMoves
                 .stream()
                 .filter(possibleMove -> !movePiece(position, possibleMove).isKingInCheck(isWhiteOnTurn))
@@ -89,6 +92,11 @@ public class Board {
 
     public Tile[][] getTiles() {
         return tiles;
+    }
+
+
+    private void promotePawn(Position to, ChessPiece promotePawnTo) {
+
     }
 
     public List<Position> getPositionsWithPredicate(Predicate<Tile> tilePredicate) {

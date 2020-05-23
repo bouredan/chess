@@ -10,12 +10,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PgnParser {
 
-    private static final Pattern TURN_REGEX_PATTERN = Pattern.compile("(\\d+)\\. (\\S+) (\\S+)");
+    private static final Pattern TURN_REGEX_PATTERN = Pattern.compile("\\s*(\\d+)\\.\\s+(\\S+)\\s+(\\S+)\\s*");
     private final Game game = Game.createNewGame();
 
     public Game loadGame(Path path) {
@@ -25,7 +26,7 @@ public class PgnParser {
 
     private String loadFileContent(Path path) {
         try {
-            return Files.readString(path).replace("\\n", "");
+            return Files.readString(path);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -51,8 +52,13 @@ public class PgnParser {
         String omittedMoveText = moveText.replaceAll("[+x#]", "");
         char firstChar = omittedMoveText.charAt(0);
         if (firstChar == 'O') {
-            // TODO handle castling
-            throw new UnsupportedOperationException("Castling is not supported yet.");
+            Position kingPosition = new Position(4, isWhite ? 0 : 7);
+            if (omittedMoveText.equals("O-O-O")) {
+                return new Move(turnNumber, kingPosition, kingPosition.copy(-2, 0));
+            } else if (omittedMoveText.equals("O-O")) {
+                return new Move(turnNumber, kingPosition, kingPosition.copy(2, 0));
+            }
+            throw new UnsupportedOperationException("Castling not recognized from text: " + omittedMoveText);
         } else if (omittedMoveText.contains("=")) {
             //TODO handle pawn promotion move
             throw new UnsupportedOperationException("Pawn promotion is not supported yet.");
@@ -75,7 +81,7 @@ public class PgnParser {
         if (numberOfPossibleMovesFrom == 0) {
             throw new UnsupportedOperationException("Game from PGN file is not valid (rule-breaking).");
         } else if (numberOfPossibleMovesFrom > 1) {
-            // TODO handle multiple possible moves
+            return new Pair<>(resolveMultiplePossibleFromPositions(possibleFromPositions, moveText), moveTo);
         }
         return new Pair<>(possibleFromPositions.get(0), moveTo);
     }
@@ -99,5 +105,26 @@ public class PgnParser {
                     && chessPiece.getNotation().equals(pieceNotation)
                     && chessPiece.canMoveTo(board, tile.getPosition(), moveTo);
         });
+    }
+
+    private Position resolveMultiplePossibleFromPositions(List<Position> possibleFromPositions, String moveText) {
+        if (moveText.length() == 3) {
+            char firstChar = moveText.charAt(0);
+            Optional<Position> foundPosition = Optional.empty();
+            if (Character.isLetter(firstChar)) {
+                foundPosition = possibleFromPositions.stream().filter(position -> position.getFile() == firstChar).findFirst();
+            } else if (Character.isDigit(firstChar)) {
+                foundPosition = possibleFromPositions.stream().filter(position -> position.getRank() == firstChar).findFirst();
+            }
+            if (foundPosition.isEmpty()) {
+                throw new UnsupportedOperationException("Unexpected move text: " + moveText);
+            }
+            return foundPosition.get();
+        } else if (moveText.length() == 4) {
+            String positionFromText = moveText.substring(2);
+            return Utils.getPositionFromMoveNotation(positionFromText);
+        } else {
+            throw new UnsupportedOperationException("Not recognized move text " + moveText);
+        }
     }
 }
