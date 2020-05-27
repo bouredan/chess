@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<BorderPane fx:id="rootBorderPane" xmlns:fx="http://javafx.com/fxml" prefHeight="1000.0" prefWidth="1000.0"
+<BorderPane fx:id="rootBorderPane" xmlns:fx="http://javafx.com/fxml" prefHeight="900.0" prefWidth="900.0"
             fx:controller="cz.cvut.fel.bouredan.chess.gui.ApplicationController" stylesheets="@board.css">
     <top>
         <HBox>
@@ -19,8 +19,8 @@
     </center>
     <bottom>
         <HBox>
-            <Button onAction="#displayPreviousBoard">&lt;</Button>
-            <Button onAction="#displayNextBoard">&gt;</Button>
+            <Button onAction="#displayPreviousBoard" styleClass="board-history-button">&lt;</Button>
+            <Button onAction="#displayNextBoard" styleClass="board-history-button">&gt;</Button>
         </HBox>
     </bottom>
 </BorderPane>

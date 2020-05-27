@@ -1,6 +1,7 @@
 package cz.cvut.fel.bouredan.chess.game.board;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
+import cz.cvut.fel.bouredan.chess.game.Move;
 import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
 import cz.cvut.fel.bouredan.chess.game.piece.King;
 
@@ -26,6 +27,22 @@ public class Board {
         return new Board();
     }
 
+    public Board performMove(Move move) {
+        if (move.isCastlingMove()) {
+            Board boardAfterKingMove = movePiece(move.from(), move.to());
+            setPieceHasMovedToTrue(boardAfterKingMove, move.to());
+            return boardAfterKingMove.movePiece(move.getRookCastlingFrom(), move.getRookCastlingTo());
+        } else if (move.isPromotionMove()) {
+            Tile[][] tilesAfterPawnMove = movePiece(move.from(), move.to()).copyTiles();
+            tilesAfterPawnMove[move.to().x()][move.to().y()] = new Tile(move.to(), move.getPromotePieceTo());
+            return new Board(tilesAfterPawnMove);
+        }
+        // Classic move
+        Board boardAfterMove = movePiece(move.from(), move.to());
+        setPieceHasMovedToTrue(boardAfterMove, move.to());
+        return boardAfterMove;
+    }
+
     public Board movePiece(Position from, Position to) {
         Tile[][] newTiles = copyTiles();
         Tile tileFrom = tileAt(from);
@@ -41,7 +58,7 @@ public class Board {
             return new ArrayList<>();
         }
         ChessPiece chessPiece = tile.getChessPiece();
-        List<Position> possibleMoves =  tile.getChessPiece().getPossibleMoves(this, position);
+        List<Position> possibleMoves = tile.getChessPiece().getPossibleMoves(this, position);
 
         // Castling
         if (chessPiece instanceof King && !chessPiece.hasMoved()) {
@@ -94,11 +111,6 @@ public class Board {
         return tiles;
     }
 
-
-    private void promotePawn(Position to, ChessPiece promotePawnTo) {
-
-    }
-
     public List<Position> getPositionsWithPredicate(Predicate<Tile> tilePredicate) {
         List<Position> positions = new ArrayList<>();
         for (int x = 0; x < BOARD_SIZE; x++) {
@@ -124,6 +136,10 @@ public class Board {
     private Position getKingPosition(boolean isWhite) {
         return getPositionsWithPredicate(tile -> tile.isOccupiedByColor(isWhite) &&
                 tile.getChessPiece() instanceof King).get(0);
+    }
+
+    private void setPieceHasMovedToTrue(Board board, Position position) {
+        board.tileAt(position).getChessPiece().setHasMovedToTrue();
     }
 
     private Tile[][] buildClearTiles() {

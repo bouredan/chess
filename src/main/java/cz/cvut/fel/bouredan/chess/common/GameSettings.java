@@ -32,15 +32,6 @@ public class GameSettings {
     public static final String BLACK_QUEEN_CLASS = "black-queen";
     public static final String BLACK_KING_CLASS = "black-king";
 
-/*    private static final Map<Class, String> PIECE_NOTATION_MAP = Map.of(
-            King.class, "K",
-            Queen.class, "Q",
-            Bishop.class, "B",
-            Knight.class, "N",
-            Rook.class, "R",
-            Pawn.class, ""
-    );
-*/
     public static Board buildDefaultStartingBoard() {
         Tile[][] tiles = new Tile[BOARD_SIZE][BOARD_SIZE];
 

@@ -18,6 +18,7 @@ public class PgnParser {
 
     private static final Pattern TURN_REGEX_PATTERN = Pattern.compile("\\s*(\\d+)\\.\\s+(\\S+)\\s+(\\S+)\\s*");
     private final Game game = Game.createNewGame();
+    private int currentTurnNumber = 0;
 
     public Game loadGame(Path path) {
         String fileContent = loadFileContent(path);
@@ -41,36 +42,47 @@ public class PgnParser {
     }
 
     private void playTurn(String turnNumberText, String whiteMoveText, String blackMoveText) {
-        int turnNumber = Integer.parseInt(turnNumberText);
-        Move whiteMove = resolveMove(turnNumber, whiteMoveText, true);
-        game.makeMove(whiteMove.from(), whiteMove.to());
-        Move blackMove = resolveMove(turnNumber, blackMoveText, false);
-        game.makeMove(blackMove.from(), blackMove.to());
+        checkTurnNumber(turnNumberText);
+        // White move
+        game.playMove(resolveMove(whiteMoveText, true));
+        // Black move
+        game.playMove(resolveMove(blackMoveText, false));
     }
 
-    private Move resolveMove(int turnNumber, String moveText, boolean isWhite) {
+    private void checkTurnNumber(String turnNumberText) {
+        try {
+            int turnNumber = Integer.parseInt(turnNumberText);
+            if (turnNumber <= currentTurnNumber) {
+                throw new UnsupportedOperationException("Turn number is lower than the previous one - " + turnNumberText);
+            }
+            currentTurnNumber = turnNumber;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            throw new UnsupportedOperationException("Turn number is not valid - " + turnNumberText, e);
+        }
+    }
+
+    private Move resolveMove(String moveText, boolean isWhite) {
         String omittedMoveText = moveText.replaceAll("[+x#]", "");
         char firstChar = omittedMoveText.charAt(0);
         if (firstChar == 'O') {
             Position kingPosition = new Position(4, isWhite ? 0 : 7);
             if (omittedMoveText.equals("O-O-O")) {
-                return new Move(turnNumber, kingPosition, kingPosition.copy(-2, 0));
+                return Move.createCastlingMove(kingPosition, kingPosition.copy(-2, 0));
             } else if (omittedMoveText.equals("O-O")) {
-                return new Move(turnNumber, kingPosition, kingPosition.copy(2, 0));
+                return Move.createCastlingMove(kingPosition, kingPosition.copy(2, 0));
             }
             throw new UnsupportedOperationException("Castling not recognized from text: " + omittedMoveText);
         } else if (omittedMoveText.contains("=")) {
-            //TODO handle pawn promotion move
-            throw new UnsupportedOperationException("Pawn promotion is not supported yet.");
-        } else if (omittedMoveText.contains("#")) {
-            // TODO handleCheckMate
-            throw new UnsupportedOperationException("Checkmate is not supported yet.");
+            Pair<Position, Position> movePositions = resolveMovePositions(omittedMoveText, isWhite, "");
+            String pieceNotation = moveText.substring(moveText.length() - 2, moveText.length() - 1);
+            return Move.createPiecePromotionMove(movePositions.getKey(), movePositions.getValue(), Utils.createChessPieceFromNotation(pieceNotation, isWhite));
         } else if (Character.isUpperCase(firstChar)) {
             Pair<Position, Position> movePositions = resolveMovePositions(omittedMoveText.substring(1), isWhite, String.valueOf(firstChar));
-            return new Move(turnNumber, movePositions.getKey(), movePositions.getValue());
+            return Move.createClassicMove(movePositions.getKey(), movePositions.getValue());
         } else {
             Pair<Position, Position> movePositions = resolveMovePositions(omittedMoveText, isWhite, "");
-            return new Move(turnNumber, movePositions.getKey(), movePositions.getValue());
+            return Move.createClassicMove(movePositions.getKey(), movePositions.getValue());
         }
     }
 

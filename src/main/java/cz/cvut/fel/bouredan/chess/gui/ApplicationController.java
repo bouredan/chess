@@ -8,8 +8,9 @@ import cz.cvut.fel.bouredan.chess.gui.game.BoardView;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
 
-import java.nio.file.Paths;
+import java.io.File;
 import java.util.logging.Logger;
 
 public class ApplicationController {
@@ -46,26 +47,29 @@ public class ApplicationController {
 
     @FXML
     private void loadGame() {
-        /*FileChooser fileChooser = new FileChooser();
+        FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Load game file");
-        fileChooser.showOpenDialog(rootBorderPane.getScene().getWindow());*/
+        fileChooser.setInitialDirectory(new File("saves/"));
+        File selectedFile = fileChooser.showOpenDialog(rootBorderPane.getScene().getWindow());
+
         PgnParser pgnParser = new PgnParser();
-        Game game = pgnParser.loadGame(Paths.get("sample.pgn"));
+        Game game = pgnParser.loadGame(selectedFile.toPath());
         displayGame(game);
     }
 
     private void displayGame(Game game) {
-        BoardController boardController = new BoardController(boardView, game);
+        boardController = new BoardController(boardView, game);
         boardView.setBoardController(boardController);
         boardView.displayBoard(game.getBoard());
     }
 
     @FXML
     private void displayPreviousBoard() {
+        boardController.displayPreviousBoard();
     }
 
     @FXML
     private void displayNextBoard() {
-
+        boardController.displayNextBoard();
     }
 }

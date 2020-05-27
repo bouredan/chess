@@ -84,3 +84,7 @@
 .black-king {
     -fx-background-image: url("pieces/BK.png");
 }
+
+.board-history-button {
+    -fx-alignment: center;
+}
