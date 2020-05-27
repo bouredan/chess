@@ -7,13 +7,13 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Knight extends ChessPiece {
+public class Knight extends Piece {
 
     private static final int[] x = new int[]{-2, -2, -1, -1, 1, 1, 2, 2};
     private static final int[] y = new int[]{-1, 1, -2, 2, -2, 2, -1, 1};
 
     public Knight(boolean isWhite) {
-        super(isWhite, "N");
+        super(PieceType.KNIGHT, isWhite);
     }
 
     @Override

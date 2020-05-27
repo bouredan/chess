@@ -1,9 +1,10 @@
 package cz.cvut.fel.bouredan.chess.game.board;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
+import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.Move;
-import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
 import cz.cvut.fel.bouredan.chess.game.piece.King;
+import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,18 +30,17 @@ public class Board {
 
     public Board performMove(Move move) {
         if (move.isCastlingMove()) {
-            Board boardAfterKingMove = movePiece(move.from(), move.to());
-            setPieceHasMovedToTrue(boardAfterKingMove, move.to());
-            return boardAfterKingMove.movePiece(move.getRookCastlingFrom(), move.getRookCastlingTo());
+            return performCastlingMove(move);
         } else if (move.isPromotionMove()) {
+            Piece promotedPawn = tileAt(move.from()).getPiece();
+            Piece newPiece = Utils.createPieceByType(move.getPromotePawnTo(), promotedPawn.isWhite());
             Tile[][] tilesAfterPawnMove = movePiece(move.from(), move.to()).copyTiles();
-            tilesAfterPawnMove[move.to().x()][move.to().y()] = new Tile(move.to(), move.getPromotePieceTo());
+            tilesAfterPawnMove[move.to().x()][move.to().y()] = new Tile(move.to(), newPiece);
             return new Board(tilesAfterPawnMove);
         }
         // Classic move
-        Board boardAfterMove = movePiece(move.from(), move.to());
-        setPieceHasMovedToTrue(boardAfterMove, move.to());
-        return boardAfterMove;
+        setPieceHasMovedToTrue(move.from());
+        return movePiece(move.from(), move.to());
     }
 
     public Board movePiece(Position from, Position to) {
@@ -48,7 +48,7 @@ public class Board {
         Tile tileFrom = tileAt(from);
 
         newTiles[from.x()][from.y()] = new Tile(from);
-        newTiles[to.x()][to.y()] = new Tile(to, tileFrom.getChessPiece());
+        newTiles[to.x()][to.y()] = new Tile(to, tileFrom.getPiece());
         return new Board(newTiles);
     }
 
@@ -57,12 +57,12 @@ public class Board {
         if (tile == null || !tile.isOccupiedByColor(isWhiteOnTurn)) {
             return new ArrayList<>();
         }
-        ChessPiece chessPiece = tile.getChessPiece();
-        List<Position> possibleMoves = tile.getChessPiece().getPossibleMoves(this, position);
+        Piece piece = tile.getPiece();
+        List<Position> possibleMoves = tile.getPiece().getPossibleMoves(this, position);
 
         // Castling
-        if (chessPiece instanceof King && !chessPiece.hasMoved()) {
-            possibleMoves.addAll(((King) chessPiece).getPossibleCastlingMoves(this, position));
+        if (piece instanceof King && !piece.hasMoved()) {
+            possibleMoves.addAll(((King) piece).getPossibleCastlingMoves(this, position));
         }
 
         return possibleMoves
@@ -130,16 +130,28 @@ public class Board {
 
     private List<Position> getPiecesAttackingPosition(Position attackedPosition, boolean isWhiteAttacker) {
         return getPositionsWithPredicate(tile -> tile.isOccupiedByColor(isWhiteAttacker) &&
-                tile.getChessPiece().canMoveTo(this, tile.getPosition(), attackedPosition));
+                tile.getPiece().canMoveTo(this, tile.getPosition(), attackedPosition));
     }
 
     private Position getKingPosition(boolean isWhite) {
         return getPositionsWithPredicate(tile -> tile.isOccupiedByColor(isWhite) &&
-                tile.getChessPiece() instanceof King).get(0);
+                tile.getPiece() instanceof King).get(0);
     }
 
-    private void setPieceHasMovedToTrue(Board board, Position position) {
-        board.tileAt(position).getChessPiece().setHasMovedToTrue();
+    private Board performCastlingMove(Move move) {
+        setPieceHasMovedToTrue(move.from());
+        Board boardAfterKingMove = movePiece(move.from(), move.to());
+
+        boolean isLongCastling = move.to().x() - move.from().x() == -2;
+        Position rookMoveFrom = isLongCastling ? move.from().copy(-4, 0) : move.from().copy(3, 0);
+        Position rookMoveTo = isLongCastling ? move.to().copy(1, 0) : move.to().copy(-1, 0);
+
+        boardAfterKingMove.setPieceHasMovedToTrue(rookMoveFrom);
+        return boardAfterKingMove.movePiece(rookMoveFrom, rookMoveTo);
+    }
+
+    private void setPieceHasMovedToTrue(Position position) {
+        tileAt(position).getPiece().setHasMovedToTrue();
     }
 
     private Tile[][] buildClearTiles() {
@@ -156,7 +168,7 @@ public class Board {
         Tile[][] tiles = new Tile[BOARD_SIZE][BOARD_SIZE];
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
-                tiles[x][y] = new Tile(new Position(x, y), this.tiles[x][y].getChessPiece());
+                tiles[x][y] = new Tile(new Position(x, y), this.tiles[x][y].getPiece());
             }
         }
         return tiles;

@@ -1,31 +1,29 @@
 package cz.cvut.fel.bouredan.chess.game.board;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
-import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
+import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 
 public class Tile {
 
     private final Position position;
-    private final ChessPiece chessPiece;
-    private String notation;
+    private final Piece piece;
 
     public Tile(Position position) {
         this(position, null);
     }
 
-    public Tile(Position position, ChessPiece chessPiece) {
+    public Tile(Position position, Piece piece) {
         super();
         this.position = position;
-        this.chessPiece = chessPiece;
-        this.notation = getNotation();
+        this.piece = piece;
     }
 
     public Position getPosition() {
         return position;
     }
 
-    public ChessPiece getChessPiece() {
-        return chessPiece;
+    public Piece getPiece() {
+        return piece;
     }
 
     public String getNotation() {
@@ -35,10 +33,10 @@ public class Tile {
     }
 
     public boolean isOccupied() {
-        return chessPiece != null;
+        return piece != null;
     }
 
     public boolean isOccupiedByColor(boolean isWhite) {
-        return isOccupied() && chessPiece.isWhite() == isWhite;
+        return isOccupied() && piece.isWhite() == isWhite;
     }
 }

@@ -6,10 +6,10 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 
 import java.util.List;
 
-public class Rook extends ChessPiece {
+public class Rook extends Piece {
 
     public Rook(boolean isWhite) {
-        super(isWhite, "R");
+        super(PieceType.ROOK, isWhite);
     }
 
     @Override

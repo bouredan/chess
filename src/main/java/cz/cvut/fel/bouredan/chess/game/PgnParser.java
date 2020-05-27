@@ -3,8 +3,8 @@ package cz.cvut.fel.bouredan.chess.game;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
-import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
-import javafx.util.Pair;
+import cz.cvut.fel.bouredan.chess.game.piece.Piece;
+import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -63,44 +63,32 @@ public class PgnParser {
     }
 
     private Move resolveMove(String moveText, boolean isWhite) {
-        String omittedMoveText = moveText.replaceAll("[+x#]", "");
-        char firstChar = omittedMoveText.charAt(0);
+        moveText = moveText.replaceAll("[+x#]", "");
+        char firstChar = moveText.charAt(0);
+
+        // Castling
         if (firstChar == 'O') {
-            Position kingPosition = new Position(4, isWhite ? 0 : 7);
-            if (omittedMoveText.equals("O-O-O")) {
-                return Move.createCastlingMove(kingPosition, kingPosition.copy(-2, 0));
-            } else if (omittedMoveText.equals("O-O")) {
-                return Move.createCastlingMove(kingPosition, kingPosition.copy(2, 0));
-            }
-            throw new UnsupportedOperationException("Castling not recognized from text: " + omittedMoveText);
-        } else if (omittedMoveText.contains("=")) {
-            Pair<Position, Position> movePositions = resolveMovePositions(omittedMoveText, isWhite, "");
-            String pieceNotation = moveText.substring(moveText.length() - 2, moveText.length() - 1);
-            return Move.createPiecePromotionMove(movePositions.getKey(), movePositions.getValue(), Utils.createChessPieceFromNotation(pieceNotation, isWhite));
-        } else if (Character.isUpperCase(firstChar)) {
-            Pair<Position, Position> movePositions = resolveMovePositions(omittedMoveText.substring(1), isWhite, String.valueOf(firstChar));
-            return Move.createClassicMove(movePositions.getKey(), movePositions.getValue());
-        } else {
-            Pair<Position, Position> movePositions = resolveMovePositions(omittedMoveText, isWhite, "");
-            return Move.createClassicMove(movePositions.getKey(), movePositions.getValue());
+            return createCastlingMove(moveText, isWhite);
         }
+
+        PieceType movedPieceType = resolveMovedPieceType(firstChar);
+
+        moveText = moveText.substring(movedPieceType.getNotation().length());
+
+        PieceType promotePieceTo = null;
+        if (moveText.contains("=")) {
+            String[] moveTextParts = moveText.split("=");
+            promotePieceTo = PieceType.getPieceTypeByNotation(moveTextParts[1]);
+            moveText = moveTextParts[0];
+        }
+        Position moveTo = resolveMoveToPosition(moveText, movedPieceType);
+        Position moveFrom = resolveMoveFromPosition(moveText, movedPieceType, game.getBoard(), moveTo, isWhite);
+        return new Move(movedPieceType, moveFrom, moveTo, promotePieceTo);
     }
 
-    private Pair<Position, Position> resolveMovePositions(String moveText, boolean isWhite, String pieceNotation) {
-        Position moveTo = resolveMoveToPosition(moveText, pieceNotation);
-        List<Position> possibleFromPositions = getPossibleFromPositions(game.getBoard(), moveTo, pieceNotation, isWhite);
-        int numberOfPossibleMovesFrom = possibleFromPositions.size();
-        if (numberOfPossibleMovesFrom == 0) {
-            throw new UnsupportedOperationException("Game from PGN file is not valid (rule-breaking).");
-        } else if (numberOfPossibleMovesFrom > 1) {
-            return new Pair<>(resolveMultiplePossibleFromPositions(possibleFromPositions, moveText), moveTo);
-        }
-        return new Pair<>(possibleFromPositions.get(0), moveTo);
-    }
-
-    private Position resolveMoveToPosition(String moveText, String pieceNotation) {
+    private Position resolveMoveToPosition(String moveText, PieceType movedPieceType) {
         if (moveText.length() > 2) {
-            if (!pieceNotation.equals("N") && !pieceNotation.equals("R") && !pieceNotation.equals("")) {
+            if (movedPieceType != PieceType.PAWN && movedPieceType != PieceType.KNIGHT && movedPieceType != PieceType.ROOK) {
                 throw new UnsupportedOperationException("Unexpected move text: " + moveText);
             }
             moveText = moveText.substring(1);
@@ -108,14 +96,24 @@ public class PgnParser {
         return Utils.getPositionFromMoveNotation(moveText);
     }
 
-    private List<Position> getPossibleFromPositions(Board board, Position moveTo, String pieceNotation, boolean isWhite) {
+    private Position resolveMoveFromPosition(String moveText, PieceType movedPieceType, Board board, Position moveTo, boolean isWhite) {
+        List<Position> possibleFromPositions = getPossibleFromPositions(board, movedPieceType, moveTo, isWhite);
+        if (possibleFromPositions.size() == 0) {
+            throw new UnsupportedOperationException("Game from PGN file is not valid (rule-breaking).");
+        } else if (possibleFromPositions.size() > 1) {
+            return resolveMultiplePossibleFromPositions(possibleFromPositions, moveText);
+        }
+        return possibleFromPositions.get(0);
+    }
+
+    private List<Position> getPossibleFromPositions(Board board, PieceType movedPieceType, Position moveTo, boolean isWhite) {
         return board.getPositionsWithPredicate(tile -> {
-            ChessPiece chessPiece = tile.getChessPiece();
+            Piece piece = tile.getPiece();
 
             // TODO handle if move would result in check (canMoveTo() does not check checks)
-            return tile.isOccupied() && chessPiece.isWhite() == isWhite
-                    && chessPiece.getNotation().equals(pieceNotation)
-                    && chessPiece.canMoveTo(board, tile.getPosition(), moveTo);
+            return tile.isOccupied() && piece.isWhite() == isWhite
+                    && piece.getPieceType() == movedPieceType
+                    && piece.canMoveTo(board, tile.getPosition(), moveTo);
         });
     }
 
@@ -138,5 +136,19 @@ public class PgnParser {
         } else {
             throw new UnsupportedOperationException("Not recognized move text " + moveText);
         }
+    }
+
+    private Move createCastlingMove(String moveText, boolean isWhite) {
+        Position kingPosition = new Position(4, isWhite ? 0 : 7);
+        if (moveText.equals("O-O-O")) {
+            return new Move(PieceType.KING, kingPosition, kingPosition.copy(-2, 0));
+        } else if (moveText.equals("O-O")) {
+            return new Move(PieceType.KING, kingPosition, kingPosition.copy(2, 0));
+        }
+        throw new UnsupportedOperationException("Castling not recognized from text: " + moveText);
+    }
+
+    private PieceType resolveMovedPieceType(char character) {
+        return Character.isUpperCase(character) ? PieceType.getPieceTypeByNotation(String.valueOf(character)) : PieceType.PAWN;
     }
 }

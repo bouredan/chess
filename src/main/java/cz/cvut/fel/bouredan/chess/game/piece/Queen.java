@@ -7,10 +7,10 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Queen extends ChessPiece {
+public class Queen extends Piece {
 
     public Queen(boolean isWhite) {
-        super(isWhite, "Q");
+        super(PieceType.QUEEN, isWhite);
     }
 
     @Override

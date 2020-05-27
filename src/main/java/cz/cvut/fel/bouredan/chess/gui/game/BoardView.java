@@ -3,7 +3,7 @@ package cz.cvut.fel.bouredan.chess.gui.game;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.board.Tile;
-import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
+import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -26,7 +26,7 @@ public class BoardView extends GridPane {
         Tile[][] tiles = board.getTiles();
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
-                addTileButton(tiles[x][y].getPosition(), tiles[x][y].getChessPiece());
+                addTileButton(tiles[x][y].getPosition(), tiles[x][y].getPiece());
             }
         }
     }
@@ -49,8 +49,8 @@ public class BoardView extends GridPane {
         this.boardController = boardController;
     }
 
-    private void addTileButton(Position position, ChessPiece chessPiece) {
-        TileButton tileButton = new TileButton(position, chessPiece);
+    private void addTileButton(Position position, Piece piece) {
+        TileButton tileButton = new TileButton(position, piece);
         Position invertedPosition = position.invertY();
         tileButtons[invertedPosition.x()][invertedPosition.y()] = tileButton;
         add(tileButton, invertedPosition.x() + 1, invertedPosition.y() + 1);
@@ -76,12 +76,12 @@ public class BoardView extends GridPane {
     private final class TileButton extends Button {
 
         private final Position position;
-        private final ChessPiece chessPiece;
+        private final Piece piece;
 
-        private TileButton(Position position, ChessPiece chessPiece) {
+        private TileButton(Position position, Piece piece) {
             super();
             this.position = position;
-            this.chessPiece = chessPiece;
+            this.piece = piece;
 
             if (boardController != null) {
                 addEventHandlers();
@@ -93,14 +93,14 @@ public class BoardView extends GridPane {
             return position;
         }
 
-        private ChessPiece getChessPiece() {
-            return chessPiece;
+        private Piece getPiece() {
+            return piece;
         }
 
         private void initStyles(Position position) {
             getStyleClass().addAll(TILE_CLASS, (position.x() + position.y()) % 2 == 0 ? WHITE_TILE_CLASS : BLACK_TILE_CLASS);
-            if (chessPiece != null) {
-                getStyleClass().add(chessPiece.getStyle());
+            if (piece != null) {
+                getStyleClass().add(piece.getStyle());
             }
         }
 

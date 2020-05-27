@@ -8,13 +8,13 @@ import cz.cvut.fel.bouredan.chess.game.board.Tile;
 import java.util.ArrayList;
 import java.util.List;
 
-public class King extends ChessPiece {
+public class King extends Piece {
 
     private static final int[] POSSIBLE_MOVES_X = new int[]{-1, -1, -1, 0, 0, 1, 1, 1};
     private static final int[] POSSIBLE_MOVES_Y = new int[]{-1, 0, 1, -1, 1, -1, 0, 1};
 
     public King(boolean isWhite) {
-        super(isWhite, "K");
+        super(PieceType.KING, isWhite);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class King extends ChessPiece {
 
     private void addPossibleCastlingMove(List<Position> castLingMoves, Board board, Position currentPosition, boolean longCastling) {
         Tile rookTile = board.tileAt(new Position(longCastling ? 0 : 7, currentPosition.y()));
-        if (!rookTile.isOccupied() || rookTile.getChessPiece().hasMoved()) {
+        if (!rookTile.isOccupied() || rookTile.getPiece().hasMoved()) {
             return;
         }
         Position kingPositionAfterCastling = currentPosition.copy(longCastling ? -2 : 2, 0);

@@ -30,6 +30,9 @@ public class BoardController {
             Position moveFrom = currentClickedPosition;
             handleMarkingPositions(null);
             Move move = game.createMove(moveFrom, clickedPosition);
+            if (move.isPromotionMove()) {
+
+            }
             if (move != null) {
                 game.playMove(move);
                 boardView.displayBoard(game.getBoard());

@@ -6,20 +6,15 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ChessPiece {
+public abstract class Piece {
 
+    private final PieceType pieceType;
     private final boolean isWhite;
-    private final String notation;
     private boolean hasMoved;
 
-    protected ChessPiece(boolean isWhite, String notation) {
-        this.notation = notation;
+    protected Piece(PieceType pieceType, boolean isWhite) {
+        this.pieceType = pieceType;
         this.isWhite = isWhite;
-    }
-
-    protected ChessPiece(boolean isWhite, String notation, boolean hasMoved) {
-        this(isWhite, notation);
-        this.hasMoved = hasMoved;
     }
 
     public abstract List<Position> getPossibleMoves(Board board, Position currentPosition);
@@ -30,8 +25,8 @@ public abstract class ChessPiece {
         return getPossibleMoves(board, from).contains(to);
     }
 
-    public String getNotation() {
-        return notation;
+    public PieceType getPieceType() {
+        return pieceType;
     }
 
     public boolean isWhite() {
@@ -40,6 +35,10 @@ public abstract class ChessPiece {
 
     public boolean hasMoved() {
         return hasMoved;
+    }
+
+    public String getNotation() {
+        return pieceType.getNotation();
     }
 
     public void setHasMovedToTrue() {

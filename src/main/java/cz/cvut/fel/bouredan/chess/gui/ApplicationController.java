@@ -51,6 +51,9 @@ public class ApplicationController {
         fileChooser.setTitle("Load game file");
         fileChooser.setInitialDirectory(new File("saves/"));
         File selectedFile = fileChooser.showOpenDialog(rootBorderPane.getScene().getWindow());
+        if (selectedFile == null) {
+            return;
+        }
 
         PgnParser pgnParser = new PgnParser();
         Game game = pgnParser.loadGame(selectedFile.toPath());

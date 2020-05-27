@@ -13,23 +13,22 @@ public class Utils {
         return new Position(x, y);
     }
 
-    public static ChessPiece createChessPieceFromNotation(String notation, boolean isWhite) {
-        switch (notation) {
-            case "K":
-                return new King(isWhite);
-            case "Q":
-                return new Queen(isWhite);
-            case "B":
-                return new Bishop(isWhite);
-            case "N":
-                return new Knight(isWhite);
-            case "R":
-                return new Rook(isWhite);
-            case "":
+    public static Piece createPieceByType(PieceType pieceType, boolean isWhite) {
+        switch (pieceType) {
+            case PAWN:
                 return new Pawn(isWhite);
+            case KING:
+                return new King(isWhite);
+            case QUEEN:
+                return new Queen(isWhite);
+            case BISHOP:
+                return new Bishop(isWhite);
+            case KNIGHT:
+                return new Knight(isWhite);
+            case ROOK:
+                return new Rook(isWhite);
             default:
                 return null;
         }
     }
-
 }

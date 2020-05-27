@@ -3,8 +3,7 @@ package cz.cvut.fel.bouredan.chess.game;
 import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
-import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
-import cz.cvut.fel.bouredan.chess.game.piece.King;
+import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,23 +40,18 @@ public class Game {
         return createMove(from, to, null);
     }
 
-    public Move createMove(Position from, Position to, ChessPiece promotePawnTo) {
+    public Move createMove(Position from, Position to, PieceType promotePawnTo) {
         List<Position> possibleMoves = board.getPossibleMoves(from, isWhiteOnTurn());
         if (!possibleMoves.contains(to)) {
             return null;
         }
-        ChessPiece movedPiece = board.tileAt(from).getChessPiece();
-
-        // Castling
-        if (movedPiece instanceof King && Math.abs(from.x() - to.x()) == 2) {
-            return Move.createCastlingMove(from, to);
-        }
+        PieceType movedPieceType = board.tileAt(from).getPiece().getPieceType();
 
         // Pawn promotion
         if (promotePawnTo != null) {
-            return Move.createPiecePromotionMove(from, to, promotePawnTo);
+            return new Move(movedPieceType, from, to, promotePawnTo);
         }
-        return Move.createClassicMove(from, to);
+        return new Move(movedPieceType, from, to);
     }
 
     public static Game createNewGame() {

@@ -6,10 +6,10 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 
 import java.util.List;
 
-public class Bishop extends ChessPiece {
+public class Bishop extends Piece {
 
     public Bishop(boolean isWhite) {
-        super(isWhite, "B");
+        super(PieceType.BISHOP, isWhite);
     }
 
     @Override

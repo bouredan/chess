@@ -1,47 +1,24 @@
 package cz.cvut.fel.bouredan.chess.game;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
-import cz.cvut.fel.bouredan.chess.game.piece.ChessPiece;
+import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
 public class Move {
 
+    private final PieceType movedPieceType;
     private final Position from;
     private final Position to;
-    private final boolean isLongPawnMove;
-    private final ChessPiece promotePieceTo;
+    private final PieceType promotePawnTo;
 
-    private final Position rookCastlingFrom;
-    private final Position rookCastlingTo;
-
-    public static Move createClassicMove(Position from, Position to) {
-        return new Move(from, to, false, null, null, null);
+    public Move(PieceType movedPieceType, Position from, Position to) {
+        this(movedPieceType, from, to, null);
     }
 
-    public static Move createCastlingMove(Position from, Position to) {
-        int kingXMove = from.x() - to.x();
-        if (kingXMove == 2) {
-            return new Move(from, to, true, null, from.copy(-4, 0), from.copy(-1, 0));
-        } else if (kingXMove == -2 ){
-            return new Move(from, to, true, null, from.copy(3, 0), from.copy(1, 0));
-        }
-        throw new UnsupportedOperationException("Invalid castling - from " + from + " to " + to);
-    }
-
-    public static Move createLongPawnMove(Position from, Position to) {
-        return new Move(from, to, true, null, null, null);
-    }
-
-    public static Move createPiecePromotionMove(Position from, Position to, ChessPiece promotePieceTo) {
-        return new Move(from, to, false, promotePieceTo, null, null);
-    }
-
-    public Move(Position from, Position to, boolean isLongPawnMove, ChessPiece promotePieceTo, Position rookCastlingFrom, Position rookCastlingTo) {
+    public Move(PieceType movedPieceType, Position from, Position to, PieceType promotePawnTo) {
+        this.movedPieceType = movedPieceType;
         this.from = from;
         this.to = to;
-        this.isLongPawnMove = isLongPawnMove;
-        this.promotePieceTo = promotePieceTo;
-        this.rookCastlingFrom = rookCastlingFrom;
-        this.rookCastlingTo = rookCastlingTo;
+        this.promotePawnTo = promotePawnTo;
     }
 
     public Position from() {
@@ -53,26 +30,18 @@ public class Move {
     }
 
     public boolean isCastlingMove() {
-        return rookCastlingFrom != null && rookCastlingTo != null;
+        return movedPieceType == PieceType.KING && Math.abs(from.x() - to.x()) == 2;
     }
 
     public boolean isLongPawnMove() {
-        return isLongPawnMove;
+        return movedPieceType == PieceType.PAWN && Math.abs(from.y() - to.y()) == 2;
     }
 
     public boolean isPromotionMove() {
-        return getPromotePieceTo() != null;
+        return promotePawnTo != null;
     }
 
-    public ChessPiece getPromotePieceTo() {
-        return promotePieceTo;
-    }
-
-    public Position getRookCastlingFrom() {
-        return rookCastlingFrom;
-    }
-
-    public Position getRookCastlingTo() {
-        return rookCastlingTo;
+    public PieceType getPromotePawnTo() {
+        return promotePawnTo;
     }
 }

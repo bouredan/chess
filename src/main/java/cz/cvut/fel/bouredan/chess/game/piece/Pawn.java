@@ -7,12 +7,12 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pawn extends ChessPiece {
+public class Pawn extends Piece {
 
     private final int moveDirection;
 
     public Pawn(boolean isWhite) {
-        super(isWhite, "");
+        super(PieceType.PAWN, isWhite);
         moveDirection = isWhite ? 1 : -1;
     }
 
