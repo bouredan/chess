@@ -43,8 +43,6 @@ public class Pawn extends Piece {
             possibleMoves.add(possibleMove);
         }
 
-        // TODO En passant
-
         return possibleMoves;
     }
 

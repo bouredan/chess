@@ -21,12 +21,20 @@ public class Move {
         this.promotePawnTo = promotePawnTo;
     }
 
+    public PieceType getMovedPieceType() {
+        return movedPieceType;
+    }
+
     public Position from() {
         return from;
     }
 
     public Position to() {
         return to;
+    }
+
+    public PieceType getPromotePawnTo() {
+        return promotePawnTo;
     }
 
     public boolean isCastlingMove() {
@@ -39,9 +47,5 @@ public class Move {
 
     public boolean isPromotionMove() {
         return promotePawnTo != null;
-    }
-
-    public PieceType getPromotePawnTo() {
-        return promotePawnTo;
     }
 }

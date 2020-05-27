@@ -19,7 +19,7 @@ public class Game {
     private Player playerOnTurn;
     private int turnNumber = 1;
     private final List<Board> boardHistory = new ArrayList<>();
-    private final List<Move> moves = new ArrayList<>();
+    private final List<Move> moveHistory = new ArrayList<>();
 
     public Game(Board board) {
         this.whitePlayer = new Player("Player 1", true);
@@ -29,10 +29,15 @@ public class Game {
         boardHistory.add(board);
     }
 
+    public static Game createNewGame() {
+        Board startingBoard = GameSettings.buildDefaultStartingBoard();
+        return new Game(startingBoard);
+    }
+
     public void playMove(Move move) {
         board = board.performMove(move);
         boardHistory.add(board);
-        moves.add(move);
+        moveHistory.add(move);
         nextTurn();
     }
 
@@ -41,7 +46,7 @@ public class Game {
     }
 
     public Move createMove(Position from, Position to, PieceType promotePawnTo) {
-        List<Position> possibleMoves = board.getPossibleMoves(from, isWhiteOnTurn());
+        List<Position> possibleMoves = getPossibleMoves(from);
         if (!possibleMoves.contains(to)) {
             return null;
         }
@@ -54,9 +59,8 @@ public class Game {
         return new Move(movedPieceType, from, to);
     }
 
-    public static Game createNewGame() {
-        Board startingBoard = GameSettings.buildDefaultStartingBoard();
-        return new Game(startingBoard);
+    public List<Position> getPossibleMoves(Position position) {
+        return board.getPossibleMoves(position, isWhiteOnTurn(), getLastMove());
     }
 
     public boolean isWhiteOnTurn() {
@@ -80,4 +84,10 @@ public class Game {
         turnNumber++;
     }
 
+    private Move getLastMove() {
+        if (moveHistory.size() == 0) {
+            return null;
+        }
+        return moveHistory.get(moveHistory.size() - 1);
+    }
 }

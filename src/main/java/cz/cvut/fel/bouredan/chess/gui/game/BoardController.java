@@ -30,9 +30,6 @@ public class BoardController {
             Position moveFrom = currentClickedPosition;
             handleMarkingPositions(null);
             Move move = game.createMove(moveFrom, clickedPosition);
-            if (move.isPromotionMove()) {
-
-            }
             if (move != null) {
                 game.playMove(move);
                 boardView.displayBoard(game.getBoard());
@@ -47,7 +44,7 @@ public class BoardController {
     public void handleMarkingPositions(Position clickedPosition) {
         boardView.unmarkPossibleMoves(currentPossibleMoves);
         this.currentClickedPosition = clickedPosition;
-        this.currentPossibleMoves = game.getBoard().getPossibleMoves(clickedPosition, game.isWhiteOnTurn());
+        this.currentPossibleMoves = game.getPossibleMoves(clickedPosition);
         boardView.markPossibleMoves(currentPossibleMoves);
     }
 

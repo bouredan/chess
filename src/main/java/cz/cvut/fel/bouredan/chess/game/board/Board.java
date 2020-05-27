@@ -5,6 +5,7 @@ import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.Move;
 import cz.cvut.fel.bouredan.chess.game.piece.King;
 import cz.cvut.fel.bouredan.chess.game.piece.Piece;
+import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +32,11 @@ public class Board {
     public Board performMove(Move move) {
         if (move.isCastlingMove()) {
             return performCastlingMove(move);
+        } else if (isEnPassantMove(move)) {
+            return performEnPassantMove(move);
         } else if (move.isPromotionMove()) {
-            Piece promotedPawn = tileAt(move.from()).getPiece();
-            Piece newPiece = Utils.createPieceByType(move.getPromotePawnTo(), promotedPawn.isWhite());
-            Tile[][] tilesAfterPawnMove = movePiece(move.from(), move.to()).copyTiles();
-            tilesAfterPawnMove[move.to().x()][move.to().y()] = new Tile(move.to(), newPiece);
-            return new Board(tilesAfterPawnMove);
+            return performPromotionMove(move);
         }
-        // Classic move
         setPieceHasMovedToTrue(move.from());
         return movePiece(move.from(), move.to());
     }
@@ -52,7 +50,7 @@ public class Board {
         return new Board(newTiles);
     }
 
-    public List<Position> getPossibleMoves(Position position, boolean isWhiteOnTurn) {
+    public List<Position> getPossibleMoves(Position position, boolean isWhiteOnTurn, Move previousMove) {
         Tile tile = tileAt(position);
         if (tile == null || !tile.isOccupiedByColor(isWhiteOnTurn)) {
             return new ArrayList<>();
@@ -61,8 +59,12 @@ public class Board {
         List<Position> possibleMoves = tile.getPiece().getPossibleMoves(this, position);
 
         // Castling
-        if (piece instanceof King && !piece.hasMoved()) {
+        if (piece.getPieceType() == PieceType.KING && !piece.hasMoved()) {
             possibleMoves.addAll(((King) piece).getPossibleCastlingMoves(this, position));
+        }
+        // En passant
+        if (isEnPassantMovePossible(position, previousMove)) {
+            possibleMoves.add(previousMove.to().copy(0, isWhiteOnTurn ? 1 : -1));
         }
 
         return possibleMoves
@@ -148,6 +150,35 @@ public class Board {
 
         boardAfterKingMove.setPieceHasMovedToTrue(rookMoveFrom);
         return boardAfterKingMove.movePiece(rookMoveFrom, rookMoveTo);
+    }
+
+    private Board performEnPassantMove(Move move) {
+        Position capturedPawnPosition = move.to().copy(0, tileAt(move.from()).getPiece().isWhite() ? -1 : 1);
+        Tile[][] newTiles = movePiece(move.from(), move.to()).copyTiles();
+        newTiles[capturedPawnPosition.x()][capturedPawnPosition.y()] = new Tile(capturedPawnPosition);
+        return new Board(newTiles);
+    }
+
+    private Board performPromotionMove(Move move) {
+        Piece promotedPawn = tileAt(move.from()).getPiece();
+        Piece newPiece = Utils.createPieceByType(move.getPromotePawnTo(), promotedPawn.isWhite());
+        Tile[][] tilesAfterPawnMove = movePiece(move.from(), move.to()).copyTiles();
+        tilesAfterPawnMove[move.to().x()][move.to().y()] = new Tile(move.to(), newPiece);
+        return new Board(tilesAfterPawnMove);
+    }
+
+    private boolean isEnPassantMovePossible(Position position, Move previousMove) {
+        return tileAt(position).getPiece().getPieceType() == PieceType.PAWN
+                && previousMove != null
+                && previousMove.isLongPawnMove()
+                && Math.abs(previousMove.to().x() - position.x()) == 1
+                && previousMove.to().y() == position.y();
+    }
+
+    private boolean isEnPassantMove(Move move) {
+        return move.getMovedPieceType() == PieceType.PAWN
+                && Math.abs(move.from().x() - move.to().x()) == 1
+                && !tileAt(move.to()).isOccupied();
     }
 
     private void setPieceHasMovedToTrue(Position position) {
