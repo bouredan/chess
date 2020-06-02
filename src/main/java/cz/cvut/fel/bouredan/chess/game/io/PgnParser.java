@@ -1,9 +1,10 @@
-package cz.cvut.fel.bouredan.chess.game;
+package cz.cvut.fel.bouredan.chess.game.io;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.common.Utils;
+import cz.cvut.fel.bouredan.chess.game.Game;
+import cz.cvut.fel.bouredan.chess.game.Move;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
-import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
 import java.io.IOException;
@@ -97,24 +98,13 @@ public class PgnParser {
     }
 
     private Position resolveMoveFromPosition(String moveText, PieceType movedPieceType, Board board, Position moveTo, boolean isWhite) {
-        List<Position> possibleFromPositions = getPossibleFromPositions(board, movedPieceType, moveTo, isWhite);
+        List<Position> possibleFromPositions = board.getPossibleFromPositions(movedPieceType, moveTo, isWhite);
         if (possibleFromPositions.size() == 0) {
             throw new UnsupportedOperationException("Game from PGN file is not valid (rule-breaking).");
         } else if (possibleFromPositions.size() > 1) {
             return resolveMultiplePossibleFromPositions(possibleFromPositions, moveText);
         }
         return possibleFromPositions.get(0);
-    }
-
-    private List<Position> getPossibleFromPositions(Board board, PieceType movedPieceType, Position moveTo, boolean isWhite) {
-        return board.getPositionsWithPredicate(tile -> {
-            Piece piece = tile.getPiece();
-
-            // TODO handle if move would result in check (canMoveTo() does not check checks)
-            return tile.isOccupied() && piece.isWhite() == isWhite
-                    && piece.getPieceType() == movedPieceType
-                    && piece.canMoveTo(board, tile.getPosition(), moveTo);
-        });
     }
 
     private Position resolveMultiplePossibleFromPositions(List<Position> possibleFromPositions, String moveText) {

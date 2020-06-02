@@ -9,10 +9,13 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import static cz.cvut.fel.bouredan.chess.common.GameSettings.*;
 
 public class BoardView extends GridPane {
+
+    private static Logger logger = Logger.getLogger(BoardView.class.getName());
 
     private final TileButton[][] tileButtons = new TileButton[BOARD_SIZE][BOARD_SIZE];
     private BoardController boardController;
@@ -106,7 +109,7 @@ public class BoardView extends GridPane {
 
         private void addEventHandlers() {
             setOnMousePressed(event -> {
-                System.out.format("Tile %c%d (x%d y%d) clicked.%n", 'a' + position.x(), position.y(), position.x(), position.y());
+                logger.fine(String.format("Tile %c%d (x%d y%d) clicked.%n", 'a' + position.x(), position.y(), position.x(), position.y()));
                 boardController.handleClick(getPosition());
             });
         }

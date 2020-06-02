@@ -1,8 +1,8 @@
 package cz.cvut.fel.bouredan.chess.gui;
 
 import cz.cvut.fel.bouredan.chess.game.Game;
-import cz.cvut.fel.bouredan.chess.game.PgnParser;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
+import cz.cvut.fel.bouredan.chess.game.io.PgnParser;
 import cz.cvut.fel.bouredan.chess.gui.game.BoardController;
 import cz.cvut.fel.bouredan.chess.gui.game.BoardView;
 import javafx.fxml.FXML;
@@ -34,8 +34,6 @@ public class ApplicationController {
     @FXML
     private void initialize() {
         boardView.displayBoard(Board.buildClearBoard());
-        //startNewGame();
-        //loadGame();
     }
 
     @FXML

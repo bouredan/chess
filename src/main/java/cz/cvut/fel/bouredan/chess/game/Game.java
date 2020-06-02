@@ -17,6 +17,7 @@ public class Game {
     private final Player blackPlayer;
     private Board board;
     private Player playerOnTurn;
+    private GameState gameState;
     private int turnNumber = 1;
     private final List<Board> boardHistory = new ArrayList<>();
     private final List<Move> moveHistory = new ArrayList<>();
@@ -34,11 +35,20 @@ public class Game {
         return new Game(startingBoard);
     }
 
-    public void playMove(Move move) {
+    public GameState playMove(Move move) {
         board = board.performMove(move);
         boardHistory.add(board);
         moveHistory.add(move);
+
+        // Player cannot move with any piece -> either checkmate or stalemate
+        if (!board.hasPlayerAnyPossibleMoves(!isWhiteOnTurn(), getLastMove())) {
+            if (board.isKingInCheck(!isWhiteOnTurn())) {
+                return gameState = GameState.CHECKMATE;
+            }
+            return gameState = GameState.STALEMATE;
+        }
         nextTurn();
+        return gameState = GameState.PLAYING;
     }
 
     public Move createMove(Position from, Position to) {

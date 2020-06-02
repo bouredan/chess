@@ -73,6 +73,18 @@ public class Board {
                 .collect(Collectors.toList());
     }
 
+    public boolean hasPlayerAnyPossibleMoves(boolean isWhite, Move previousMove) {
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                Position position = new Position(x, y);
+                if (tileAt(position).isOccupiedByColor(isWhite) && !getPossibleMoves(position, isWhite, previousMove).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean isKingInCheck(boolean isWhite) {
         Position kingPosition = getKingPosition(isWhite);
         return getPiecesAttackingPosition(kingPosition, !isWhite).size() > 0;
@@ -113,31 +125,19 @@ public class Board {
         return tiles;
     }
 
-    public List<Position> getPositionsWithPredicate(Predicate<Tile> tilePredicate) {
-        List<Position> positions = new ArrayList<>();
-        for (int x = 0; x < BOARD_SIZE; x++) {
-            for (int y = 0; y < BOARD_SIZE; y++) {
-                Tile tile = tileAt(new Position(x, y));
-                if (tilePredicate.test(tile)) {
-                    positions.add(tile.getPosition());
-                }
-            }
-        }
-        return positions;
+    public List<Position> getPossibleFromPositions(PieceType movedPieceType, Position moveTo, boolean isWhite) {
+        return getPositionsWithPredicate(tile -> {
+            Piece piece = tile.getPiece();
+
+            // TODO handle if move would result in check (canMoveTo() does not check checks)
+            return tile.isOccupied() && piece.isWhite() == isWhite
+                    && piece.getPieceType() == movedPieceType
+                    && piece.canMoveTo(this, tile.getPosition(), moveTo);
+        });
     }
 
     private Board() {
         this.tiles = buildClearTiles();
-    }
-
-    private List<Position> getPiecesAttackingPosition(Position attackedPosition, boolean isWhiteAttacker) {
-        return getPositionsWithPredicate(tile -> tile.isOccupiedByColor(isWhiteAttacker) &&
-                tile.getPiece().canMoveTo(this, tile.getPosition(), attackedPosition));
-    }
-
-    private Position getKingPosition(boolean isWhite) {
-        return getPositionsWithPredicate(tile -> tile.isOccupiedByColor(isWhite) &&
-                tile.getPiece() instanceof King).get(0);
     }
 
     private Board performCastlingMove(Move move) {
@@ -181,8 +181,32 @@ public class Board {
                 && !tileAt(move.to()).isOccupied();
     }
 
+    private List<Position> getPiecesAttackingPosition(Position attackedPosition, boolean isWhiteAttacker) {
+        return getPositionsWithPredicate(tile -> tile.isOccupiedByColor(isWhiteAttacker) &&
+                tile.getPiece().canMoveTo(this, tile.getPosition(), attackedPosition));
+    }
+
+    private Position getKingPosition(boolean isWhite) {
+        return getPositionsWithPredicate(tile -> {
+            return tile.isOccupiedByColor(isWhite) && tile.getPiece().getPieceType() == PieceType.KING;
+        }).get(0);
+    }
+
     private void setPieceHasMovedToTrue(Position position) {
         tileAt(position).getPiece().setHasMovedToTrue();
+    }
+
+    private List<Position> getPositionsWithPredicate(Predicate<Tile> tilePredicate) {
+        List<Position> positions = new ArrayList<>();
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                Tile tile = tileAt(new Position(x, y));
+                if (tilePredicate.test(tile)) {
+                    positions.add(tile.getPosition());
+                }
+            }
+        }
+        return positions;
     }
 
     private Tile[][] buildClearTiles() {

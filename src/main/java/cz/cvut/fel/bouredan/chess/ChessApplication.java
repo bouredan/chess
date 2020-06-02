@@ -1,4 +1,4 @@
-package cz.cvut.fel.bouredan.chess.gui;
+package cz.cvut.fel.bouredan.chess;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class ChessApplication extends Application {
 
@@ -23,11 +24,18 @@ public class ChessApplication extends Application {
 
     private Scene loadSceneFromFxml() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("root.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("gui/root.fxml"));
             Parent root = fxmlLoader.load();
             return new Scene(root);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void loadLoggingProperties() {
+        URL loggingProperties = ChessApplication.class.getClassLoader().getResource("logging.properties");
+        if (loggingProperties != null) {
+            System.setProperty("java.util.logging.config.file", loggingProperties.getFile());
         }
     }
 }
