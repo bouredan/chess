@@ -1,4 +1,4 @@
-package cz.cvut.fel.bouredan.chess.gui.game;
+package cz.cvut.fel.bouredan.chess.gui.board;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
