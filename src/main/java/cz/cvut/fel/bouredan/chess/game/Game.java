@@ -1,5 +1,6 @@
 package cz.cvut.fel.bouredan.chess.game;
 
+import cz.cvut.fel.bouredan.chess.common.ChessClock;
 import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
@@ -20,18 +21,28 @@ public class Game {
     private int turnNumber = 1;
     private final List<Board> boardHistory = new ArrayList<>();
     private final List<Move> moveHistory = new ArrayList<>();
+    private final ChessClock chessClock;
 
     public Game(Board board) {
+        this(board, null);
+    }
+
+    public Game(Board board, ChessClock chessClock) {
         this.whitePlayer = new Player("Player 1", true);
         this.blackPlayer = new Player("Player 2", false);
         this.playerOnTurn = whitePlayer;
         this.board = board;
-        boardHistory.add(board);
+        this.boardHistory.add(board);
+        this.chessClock = chessClock;
+        if (chessClock != null) {
+            chessClock.startClock();
+        }
     }
 
     public static Game createNewGame() {
         Board startingBoard = GameSettings.buildDefaultStartingBoard();
-        return new Game(startingBoard);
+        ChessClock chessClock = new ChessClock(10, 20, true);
+        return new Game(startingBoard, chessClock);
     }
 
     public void playMove(Move move) {
@@ -80,6 +91,9 @@ public class Game {
     }
 
     private void nextTurn() {
+        if (chessClock != null) {
+            chessClock.switchClock();
+        }
         playerOnTurn = isWhiteOnTurn() ? blackPlayer : whitePlayer;
         turnNumber++;
     }

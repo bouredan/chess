@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<?import cz.cvut.fel.bouredan.chess.gui.game.BoardView?>
+<?import cz.cvut.fel.bouredan.chess.gui.board.BoardView?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
