@@ -1,5 +1,6 @@
 package cz.cvut.fel.bouredan.chess.game.board;
 
+import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.Move;
@@ -23,6 +24,10 @@ public class Board {
 
     public Board(Tile[][] tiles) {
         this.tiles = tiles;
+    }
+
+    public static Board buildStartingBoard() {
+        return GameSettings.buildDefaultStartingBoard();
     }
 
     public static Board buildClearBoard() {

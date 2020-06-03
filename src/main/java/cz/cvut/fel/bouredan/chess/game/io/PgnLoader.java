@@ -18,10 +18,11 @@ import java.util.regex.Pattern;
 public class PgnLoader {
 
     private static final Pattern TURN_REGEX_PATTERN = Pattern.compile("\\s*(\\d+)\\.\\s+(\\S+)\\s+(\\S+)\\s*");
-    private final Game game = Game.createNewGame();
+    private Game game;
     private int currentTurnNumber = 0;
 
     public Game loadGame(Path path) {
+        game = new Game(Board.buildStartingBoard());
         String fileContent = loadFileContent(path);
         return playOutGame(fileContent);
     }

@@ -9,6 +9,9 @@ public class GameSettings {
     // Board size
     public static final int BOARD_SIZE = 8;
 
+    // Timers
+    public static final long TIMER_SECONDS = 600;
+
     // CSS classes
     public static final String FILE_LABEL_CLASS = "file-label";
     public static final String RANK_LABEL_CLASS = "rank-label";

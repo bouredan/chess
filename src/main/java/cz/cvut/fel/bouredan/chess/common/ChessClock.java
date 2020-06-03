@@ -4,16 +4,22 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
+import java.util.logging.Logger;
 
 public class ChessClock {
 
+    private static final Logger logger = Logger.getLogger(ChessClock.class.getName());
+
     private Timer timer;
+    private final BiConsumer<Boolean, Long> updateConsumer;
     private final Map<Boolean, Long> remainingSecondsMap = new ConcurrentHashMap<>();
     private boolean isWhitePlayerOnTurn;
     private boolean isGameRunning;
 
-    public ChessClock(long whitePlayerSeconds, long blackPlayerSeconds, boolean isWhitePlayerOnTurn) {
-        this.timer = new Timer();
+    public ChessClock(long whitePlayerSeconds, long blackPlayerSeconds, boolean isWhitePlayerOnTurn, BiConsumer<Boolean, Long> updateConsumer) {
+        this.timer = new Timer(true);
+        this.updateConsumer = updateConsumer;
         this.remainingSecondsMap.put(true, whitePlayerSeconds);
         this.remainingSecondsMap.put(false, blackPlayerSeconds);
         this.isWhitePlayerOnTurn = isWhitePlayerOnTurn;
@@ -40,7 +46,7 @@ public class ChessClock {
     }
 
     private void startClockOfPlayer(boolean isWhitePlayer) {
-        timer = new Timer();
+        timer = new Timer(true);
         timer.schedule(new PlayerClockTick(isWhitePlayer), 0, 1000);
     }
 
@@ -56,12 +62,17 @@ public class ChessClock {
         public void run() {
             long remainingSeconds = remainingSecondsMap.get(isWhitePlayer);
             if (remainingSeconds <= 0) {
-                System.out.println("Time has run out!");
+                logger.finer(getPlayerSideName() + " has run out of time!");
                 cancel();
                 return;
             }
-            System.out.println((isWhitePlayer ? "White" : "Black") + " player has " + remainingSeconds + " remainingSeconds left.");
+            updateConsumer.accept(isWhitePlayer, remainingSeconds);
+            logger.finer( getPlayerSideName() + " player has " + remainingSeconds + "s remaining left.");
             remainingSecondsMap.put(isWhitePlayer, remainingSeconds - 1);
+        }
+
+        private String getPlayerSideName() {
+            return isWhitePlayer ? "White" : "Black";
         }
     }
 }

@@ -1,7 +1,6 @@
 package cz.cvut.fel.bouredan.chess.game;
 
 import cz.cvut.fel.bouredan.chess.common.ChessClock;
-import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.io.PgnSaver;
@@ -40,12 +39,6 @@ public class Game {
         if (chessClock != null) {
             chessClock.startClock();
         }
-    }
-
-    public static Game createNewGame() {
-        Board startingBoard = GameSettings.buildDefaultStartingBoard();
-        ChessClock chessClock = new ChessClock(10, 20, true);
-        return new Game(startingBoard, chessClock);
     }
 
     public GameState playMove(Move move) {

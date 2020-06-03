@@ -5,6 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <BorderPane fx:id="rootBorderPane" xmlns:fx="http://javafx.com/fxml" prefHeight="900.0" prefWidth="900.0"
             fx:controller="cz.cvut.fel.bouredan.chess.gui.ApplicationController" stylesheets="@board.css">
     <top>
@@ -18,6 +19,12 @@
     <center>
         <BoardView fx:id="boardView"/>
     </center>
+    <right>
+        <VBox>
+            <Label fx:id="whiteTimer"/>
+            <Label fx:id="blackTimer"/>
+        </VBox>
+    </right>
     <bottom>
         <HBox>
             <Button onAction="#displayPreviousBoard" styleClass="board-history-button">&lt;</Button>
