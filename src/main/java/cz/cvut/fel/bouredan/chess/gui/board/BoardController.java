@@ -1,15 +1,15 @@
 package cz.cvut.fel.bouredan.chess.gui.board;
 
+import cz.cvut.fel.bouredan.chess.common.ChessClock;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.Game;
 import cz.cvut.fel.bouredan.chess.game.GameState;
 import cz.cvut.fel.bouredan.chess.game.Move;
-import javafx.scene.control.Label;
-import javafx.stage.Popup;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 public class BoardController {
@@ -18,18 +18,26 @@ public class BoardController {
 
     private final BoardView boardView;
     private final Game game;
+    private final ChessClock chessClock;
+    private final Consumer<GameState> gameStateConsumer;
+    private boolean isGameEditable = true;
     private int currentBoardShown;
 
     private Position currentClickedPosition;
     private List<Position> currentPossibleMoves = new ArrayList<>();
 
-    public BoardController(BoardView boardView, Game game) {
+    public BoardController(BoardView boardView, Game game, ChessClock chessClock, Consumer<GameState> gameStateConsumer) {
         this.boardView = boardView;
         this.game = game;
+        this.chessClock = chessClock;
+        this.gameStateConsumer = gameStateConsumer;
         this.currentBoardShown = game.getTurnNumber() - 1;
     }
 
     public void handleClick(Position clickedPosition) {
+        if (!isGameEditable) {
+            return;
+        }
         if (!currentPossibleMoves.contains(clickedPosition)) {
             remarkPossibleMoves(clickedPosition);
             currentClickedPosition = clickedPosition;
@@ -41,8 +49,15 @@ public class BoardController {
             return;
         }
         remarkPossibleMoves(null);
-        playMoveTo(clickedPosition);
+        handleMoveTo(clickedPosition);
         currentClickedPosition = null;
+    }
+
+    public void endGame() {
+        if (chessClock != null) {
+            chessClock.endGame();
+        }
+        isGameEditable = false;
     }
 
     public void saveGameToPgnFile(Path path) {
@@ -59,37 +74,20 @@ public class BoardController {
         displayBoard(wantedBoardIndex);
     }
 
-    private boolean playMoveTo(Position moveTo) {
+    private void handleMoveTo(Position moveTo) {
         Move move = game.createMove(currentClickedPosition, moveTo);
         GameState gameState = game.playMove(move);
         boardView.displayBoard(game.getBoard());
-        return handleGameState(gameState);
+        chessClock.switchClock();
+        gameStateConsumer.accept(gameState);
     }
 
-    private boolean displayBoard(int index) {
+    private void displayBoard(int index) {
         if (index < 0 || index >= game.getTurnNumber()) {
-            logger.warning("Board with index " + index + " does not exist.");
-            return false;
+            throw new IndexOutOfBoundsException("Board with index " + index + " does not exist.");
         }
         boardView.displayBoard(game.getBoard(index));
         currentBoardShown = index;
-        return true;
-    }
-
-    private boolean handleGameState(GameState gameState) {
-        if (gameState == GameState.PLAYING) {
-            return true;
-        }
-        Popup popup = new Popup();
-        if (gameState == GameState.CHECKMATE) {
-            popup.getContent().add(new Label("Checkmate!\n" + (game.isWhiteOnTurn() ? "White" : "Black") + " player won."));
-        } else if (gameState == GameState.STALEMATE) {
-            popup.getContent().add(new Label("Stalemate!"));
-        } else if (gameState == GameState.DRAW) {
-            popup.getContent().add(new Label("Draw!"));
-        }
-        popup.show(boardView.getScene().getWindow());
-        return false;
     }
 
     private void remarkPossibleMoves(Position clickedPosition) {

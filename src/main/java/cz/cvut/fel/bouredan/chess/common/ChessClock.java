@@ -45,6 +45,11 @@ public class ChessClock {
         timer.cancel();
     }
 
+    public void endGame() {
+        pauseClock();
+        timer.purge();
+    }
+
     private void startClockOfPlayer(boolean isWhitePlayer) {
         timer = new Timer(true);
         timer.schedule(new PlayerClockTick(isWhitePlayer), 0, 1000);
@@ -61,18 +66,13 @@ public class ChessClock {
         @Override
         public void run() {
             long remainingSeconds = remainingSecondsMap.get(isWhitePlayer);
+            updateConsumer.accept(isWhitePlayer, remainingSeconds);
             if (remainingSeconds <= 0) {
-                logger.finer(getPlayerSideName() + " has run out of time!");
-                cancel();
+                logger.info(Utils.getPlayerSideName(isWhitePlayer) + " has run out of time!");
                 return;
             }
-            updateConsumer.accept(isWhitePlayer, remainingSeconds);
-            logger.finer( getPlayerSideName() + " player has " + remainingSeconds + "s remaining left.");
+            logger.info( Utils.getPlayerSideName(isWhitePlayer) + " player has " + remainingSeconds + "s remaining left.");
             remainingSecondsMap.put(isWhitePlayer, remainingSeconds - 1);
-        }
-
-        private String getPlayerSideName() {
-            return isWhitePlayer ? "White" : "Black";
         }
     }
 }

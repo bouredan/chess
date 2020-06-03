@@ -22,7 +22,7 @@ public class PgnLoader {
     private int currentTurnNumber = 0;
 
     public Game loadGame(Path path) {
-        game = new Game(Board.buildStartingBoard());
+        game = new Game();
         String fileContent = loadFileContent(path);
         return playOutGame(fileContent);
     }

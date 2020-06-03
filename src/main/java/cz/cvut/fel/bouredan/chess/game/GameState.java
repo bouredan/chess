@@ -2,7 +2,8 @@ package cz.cvut.fel.bouredan.chess.game;
 
 public enum GameState {
     PLAYING("*"),
-    CHECKMATE("1-0"),
+    WHITE_WON("1-0"),
+    BLACK_WON("0-1"),
     STALEMATE("1/2-1/2"),
     DRAW("1/2-1/2");
 

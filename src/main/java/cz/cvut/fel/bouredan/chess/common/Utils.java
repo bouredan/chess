@@ -4,6 +4,10 @@ import cz.cvut.fel.bouredan.chess.game.piece.*;
 
 public class Utils {
 
+    public static String getPlayerSideName(boolean isWhite) {
+        return isWhite ? "White" : "Black";
+    }
+
     public static Position getPositionFromMoveNotation(String notation) {
         char firstChar = notation.charAt(0);
         char secondChar = notation.charAt(1);

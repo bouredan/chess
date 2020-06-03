@@ -1,6 +1,5 @@
 package cz.cvut.fel.bouredan.chess.game;
 
-import cz.cvut.fel.bouredan.chess.common.ChessClock;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.io.PgnSaver;
@@ -17,28 +16,22 @@ public class Game {
 
     private final Player whitePlayer;
     private final Player blackPlayer;
-    private Board board;
     private Player playerOnTurn;
+    private Board board;
     private GameState gameState = GameState.PLAYING;
     private int turnNumber = 1;
     private final List<Board> boardHistory = new ArrayList<>();
     private final List<Move> moveHistory = new ArrayList<>();
-    private final ChessClock chessClock;
 
-    public Game(Board board) {
-        this(board, null);
+    public Game() {
+        this(Board.buildStartingBoard());
     }
-
-    public Game(Board board, ChessClock chessClock) {
+    public Game(Board board) {
         this.whitePlayer = new Player("Player 1", true);
         this.blackPlayer = new Player("Player 2", false);
         this.playerOnTurn = whitePlayer;
         this.board = board;
         this.boardHistory.add(board);
-        this.chessClock = chessClock;
-        if (chessClock != null) {
-            chessClock.startClock();
-        }
     }
 
     public GameState playMove(Move move) {
@@ -49,7 +42,7 @@ public class Game {
         // Player cannot move with any piece -> either checkmate or stalemate
         if (!board.hasPlayerAnyPossibleMoves(!isWhiteOnTurn(), move)) {
             if (board.isKingInCheck(!isWhiteOnTurn())) {
-                return gameState = GameState.CHECKMATE;
+                return gameState = isWhiteOnTurn() ? GameState.WHITE_WON : GameState.BLACK_WON;
             }
             return gameState = GameState.STALEMATE;
         }
@@ -101,9 +94,6 @@ public class Game {
     }
 
     private void nextTurn() {
-        if (chessClock != null) {
-            chessClock.switchClock();
-        }
         playerOnTurn = isWhiteOnTurn() ? blackPlayer : whitePlayer;
         turnNumber++;
     }

@@ -10,7 +10,7 @@ public class GameSettings {
     public static final int BOARD_SIZE = 8;
 
     // Timers
-    public static final long TIMER_SECONDS = 600;
+    public static final long TIMER_SECONDS = 10;
 
     // CSS classes
     public static final String FILE_LABEL_CLASS = "file-label";

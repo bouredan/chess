@@ -2,12 +2,14 @@ package cz.cvut.fel.bouredan.chess.gui;
 
 import cz.cvut.fel.bouredan.chess.common.ChessClock;
 import cz.cvut.fel.bouredan.chess.game.Game;
+import cz.cvut.fel.bouredan.chess.game.GameState;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.io.PgnLoader;
 import cz.cvut.fel.bouredan.chess.gui.board.BoardController;
 import cz.cvut.fel.bouredan.chess.gui.board.BoardView;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -16,16 +18,14 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
 
 import static cz.cvut.fel.bouredan.chess.common.GameSettings.TIMER_SECONDS;
+import static cz.cvut.fel.bouredan.chess.common.Utils.getPlayerSideName;
 
 public class ApplicationController {
 
     private static final Logger logger = Logger.getLogger(ApplicationController.class.getName());
-    private static final DateFormat timerFormat = new SimpleDateFormat("HH:mm:ss");
 
     @FXML
     private BorderPane rootBorderPane;
@@ -57,9 +57,8 @@ public class ApplicationController {
 
     @FXML
     private void startNewGame() {
-        Game game = new Game(Board.buildStartingBoard(), initializeChessClock());
-        displayGame(game);
-        logger.info("Started new game.");
+        Game game = new Game();
+        startGame(game);
     }
 
     @FXML
@@ -74,7 +73,7 @@ public class ApplicationController {
 
         PgnLoader pgnLoader = new PgnLoader();
         Game game = pgnLoader.loadGame(selectedFile.toPath());
-        displayGame(game);
+        startGame(game);
     }
 
     @FXML
@@ -93,10 +92,14 @@ public class ApplicationController {
         boardController.saveGameToPgnFile(path);
     }
 
-    private void displayGame(Game game) {
-        boardController = new BoardController(boardView, game);
+    private void startGame(Game game) {
+        endGameIfRunning();
+        logger.info("Started new game.");
+        ChessClock chessClock = initializeChessClock();
+        boardController = new BoardController(boardView, game, chessClock, this::handleGameState);
         boardView.setBoardController(boardController);
         boardView.displayBoard(game.getBoard());
+        chessClock.startClock();
     }
 
     @FXML
@@ -109,6 +112,29 @@ public class ApplicationController {
         boardController.displayNextBoard();
     }
 
+    private void handleGameState(GameState gameState) {
+        Alert popUp = new Alert(Alert.AlertType.INFORMATION);
+        switch (gameState) {
+            case PLAYING:
+                return;
+            case BLACK_WON:
+            case WHITE_WON:
+                popUp.setHeaderText("Checkmate!");
+                popUp.setContentText(getPlayerSideName(gameState == GameState.WHITE_WON) + " player wins.");
+                break;
+            case DRAW:
+                popUp.setHeaderText("Drawn!");
+                popUp.setContentText("Both players agreed on draw.");
+                break;
+            case STALEMATE:
+                popUp.setHeaderText("Stalemate!");
+                popUp.setContentText("Player cannot move, it is a stalemate.");
+        }
+        popUp.setTitle("Game result");
+        popUp.showAndWait();
+        boardController.endGame();
+    }
+
     private ChessClock initializeChessClock() {
         ChessClock chessClock = new ChessClock(TIMER_SECONDS, TIMER_SECONDS, true,
                 (isWhitePlayerTime, remainingSeconds) -> Platform.runLater(() -> {
@@ -117,10 +143,28 @@ public class ApplicationController {
                     } else {
                         blackTimer.setText(getSecondsInTimeFormat(remainingSeconds));
                     }
+                    if (remainingSeconds <= 0) {
+                        handleRunOutOfTime(isWhitePlayerTime);
+                    }
                 }));
         whiteTimer.setText(getSecondsInTimeFormat(TIMER_SECONDS));
         blackTimer.setText(getSecondsInTimeFormat(TIMER_SECONDS));
         return chessClock;
+    }
+
+    private void handleRunOutOfTime(boolean isPlayerOutOfTimeWhite) {
+        boardController.endGame();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game result");
+        alert.setHeaderText(getPlayerSideName(!isPlayerOutOfTimeWhite) + " player wins.");
+        alert.setContentText(getPlayerSideName(isPlayerOutOfTimeWhite) + " player has run out of time.");
+        alert.showAndWait();
+    }
+
+    private void endGameIfRunning() {
+        if (boardController != null) {
+            boardController.endGame();
+        }
     }
 
     private String getSecondsInTimeFormat(long remainingSeconds) {
