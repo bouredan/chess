@@ -24,6 +24,6 @@ public enum PieceType {
                 return pieceType;
             }
         }
-        return null;
+        throw new UnsupportedOperationException("Piece with notation " + notation + " was not found.");
     }
 }

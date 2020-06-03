@@ -130,9 +130,9 @@ public class ApplicationController {
                 popUp.setHeaderText("Stalemate!");
                 popUp.setContentText("Player cannot move, it is a stalemate.");
         }
+        boardController.endGame();
         popUp.setTitle("Game result");
         popUp.showAndWait();
-        boardController.endGame();
     }
 
     private ChessClock initializeChessClock() {

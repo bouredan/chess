@@ -2,9 +2,11 @@ package cz.cvut.fel.bouredan.chess.gui.board;
 
 import cz.cvut.fel.bouredan.chess.common.ChessClock;
 import cz.cvut.fel.bouredan.chess.common.Position;
+import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.Game;
 import cz.cvut.fel.bouredan.chess.game.GameState;
 import cz.cvut.fel.bouredan.chess.game.Move;
+import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -75,11 +77,19 @@ public class BoardController {
     }
 
     private void handleMoveTo(Position moveTo) {
-        Move move = game.createMove(currentClickedPosition, moveTo);
+        Move move = createMove(moveTo);
         GameState gameState = game.playMove(move);
         boardView.displayBoard(game.getBoard());
         chessClock.switchClock();
         gameStateConsumer.accept(gameState);
+    }
+
+    private Move createMove(Position moveTo) {
+        if (Utils.isMovePawnPromotion(game.getBoard(), currentClickedPosition, moveTo)) {
+            logger.fine("Pawn promotion.");
+            return game.createMove(currentClickedPosition, moveTo, showPawnPromotionSelect());
+        }
+        return game.createMove(currentClickedPosition, moveTo);
     }
 
     private void displayBoard(int index) {
@@ -98,5 +108,11 @@ public class BoardController {
 
     private void unmarkPossibleMoves() {
         boardView.unmarkPossibleMoves(currentPossibleMoves);
+    }
+
+    private Piece showPawnPromotionSelect() {
+        PawnPromotionDialog pawnPromotionDialog = new PawnPromotionDialog(game.isWhiteOnTurn());
+        pawnPromotionDialog.showAndWait();
+        return pawnPromotionDialog.getResult();
     }
 }

@@ -5,6 +5,7 @@ import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.Game;
 import cz.cvut.fel.bouredan.chess.game.Move;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
+import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
 import java.io.IOException;
@@ -77,15 +78,15 @@ public class PgnLoader {
 
         moveText = moveText.substring(movedPieceType.getNotation().length());
 
-        PieceType promotePieceTo = null;
+        Piece promotePawnTo = null;
         if (moveText.contains("=")) {
             String[] moveTextParts = moveText.split("=");
-            promotePieceTo = PieceType.getPieceTypeByNotation(moveTextParts[1]);
+            promotePawnTo = Utils.createPieceByType(PieceType.getPieceTypeByNotation(moveTextParts[1]), isWhite);
             moveText = moveTextParts[0];
         }
         Position moveTo = resolveMoveToPosition(moveText, movedPieceType);
         Position moveFrom = resolveMoveFromPosition(moveText, movedPieceType, game.getBoard(), moveTo, isWhite);
-        return new Move(movedPieceType, moveFrom, moveTo, promotePieceTo);
+        return new Move(movedPieceType, moveFrom, moveTo, promotePawnTo);
     }
 
     private Position resolveMoveToPosition(String moveText, PieceType movedPieceType) {

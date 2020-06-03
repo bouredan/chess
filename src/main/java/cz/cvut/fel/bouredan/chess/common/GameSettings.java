@@ -4,13 +4,15 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.board.Tile;
 import cz.cvut.fel.bouredan.chess.game.piece.*;
 
+import java.util.List;
+
 public class GameSettings {
 
     // Board size
     public static final int BOARD_SIZE = 8;
 
     // Timers
-    public static final long TIMER_SECONDS = 10;
+    public static final long TIMER_SECONDS = 600;
 
     // CSS classes
     public static final String FILE_LABEL_CLASS = "file-label";
@@ -48,6 +50,10 @@ public class GameSettings {
             }
         }
         return new Board(tiles);
+    }
+
+    public static List<Piece> getPossiblePawnPromotions(boolean isWhite) {
+        return List.of(new Queen(isWhite), new Rook(isWhite), new Knight(isWhite), new Bishop(isWhite), new Pawn(isWhite));
     }
 
     private static void buildStartingBoardSide(Tile[][] tiles, int pawnRank, int otherPiecesRank, boolean isWhite) {

@@ -2,7 +2,6 @@ package cz.cvut.fel.bouredan.chess.game.board;
 
 import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
-import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.Move;
 import cz.cvut.fel.bouredan.chess.game.piece.King;
 import cz.cvut.fel.bouredan.chess.game.piece.Piece;
@@ -165,10 +164,8 @@ public class Board {
     }
 
     private Board performPromotionMove(Move move) {
-        Piece promotedPawn = tileAt(move.from()).getPiece();
-        Piece newPiece = Utils.createPieceByType(move.getPromotePawnTo(), promotedPawn.isWhite());
         Tile[][] tilesAfterPawnMove = movePiece(move.from(), move.to()).copyTiles();
-        tilesAfterPawnMove[move.to().x()][move.to().y()] = new Tile(move.to(), newPiece);
+        tilesAfterPawnMove[move.to().x()][move.to().y()] = new Tile(move.to(), move.getPromotePawnTo());
         return new Board(tilesAfterPawnMove);
     }
 

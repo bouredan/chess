@@ -3,6 +3,7 @@ package cz.cvut.fel.bouredan.chess.game;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.io.PgnSaver;
+import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
 import java.nio.file.Path;
@@ -54,7 +55,7 @@ public class Game {
         return createMove(from, to, null);
     }
 
-    public Move createMove(Position from, Position to, PieceType promotePawnTo) {
+    public Move createMove(Position from, Position to, Piece promotePawnTo) {
         List<Position> possibleMoves = getPossibleMoves(from);
         if (!possibleMoves.contains(to)) {
             return null;

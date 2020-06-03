@@ -2,6 +2,7 @@ package cz.cvut.fel.bouredan.chess.game;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
+import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
 public class Move {
@@ -9,13 +10,13 @@ public class Move {
     private final PieceType movedPieceType;
     private final Position from;
     private final Position to;
-    private final PieceType promotePawnTo;
+    private final Piece promotePawnTo;
 
     public Move(PieceType movedPieceType, Position from, Position to) {
         this(movedPieceType, from, to, null);
     }
 
-    public Move(PieceType movedPieceType, Position from, Position to, PieceType promotePawnTo) {
+    public Move(PieceType movedPieceType, Position from, Position to, Piece promotePawnTo) {
         this.movedPieceType = movedPieceType;
         this.from = from;
         this.to = to;
@@ -34,7 +35,7 @@ public class Move {
         return to;
     }
 
-    public PieceType getPromotePawnTo() {
+    public Piece getPromotePawnTo() {
         return promotePawnTo;
     }
 

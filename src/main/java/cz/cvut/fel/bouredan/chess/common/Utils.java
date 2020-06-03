@@ -1,5 +1,7 @@
 package cz.cvut.fel.bouredan.chess.common;
 
+import cz.cvut.fel.bouredan.chess.game.board.Board;
+import cz.cvut.fel.bouredan.chess.game.board.Tile;
 import cz.cvut.fel.bouredan.chess.game.piece.*;
 
 public class Utils {
@@ -34,5 +36,12 @@ public class Utils {
             default:
                 return null;
         }
+    }
+
+    public static boolean isMovePawnPromotion(Board board, Position moveFrom, Position moveTo) {
+        Tile tileFrom = board.tileAt(moveFrom);
+        return (moveTo.y() == 0 || moveTo.y() == 7) &&
+                tileFrom.isOccupied() &&
+                tileFrom.getPiece().getPieceType() == PieceType.PAWN;
     }
 }
