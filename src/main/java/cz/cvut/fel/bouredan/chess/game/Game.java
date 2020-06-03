@@ -4,8 +4,10 @@ import cz.cvut.fel.bouredan.chess.common.ChessClock;
 import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
+import cz.cvut.fel.bouredan.chess.game.io.PgnSaver;
 import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -18,7 +20,7 @@ public class Game {
     private final Player blackPlayer;
     private Board board;
     private Player playerOnTurn;
-    private GameState gameState;
+    private GameState gameState = GameState.PLAYING;
     private int turnNumber = 1;
     private final List<Board> boardHistory = new ArrayList<>();
     private final List<Move> moveHistory = new ArrayList<>();
@@ -52,7 +54,7 @@ public class Game {
         moveHistory.add(move);
 
         // Player cannot move with any piece -> either checkmate or stalemate
-        if (!board.hasPlayerAnyPossibleMoves(!isWhiteOnTurn(), getLastMove())) {
+        if (!board.hasPlayerAnyPossibleMoves(!isWhiteOnTurn(), move)) {
             if (board.isKingInCheck(!isWhiteOnTurn())) {
                 return gameState = GameState.CHECKMATE;
             }
@@ -98,6 +100,11 @@ public class Game {
 
     public int getTurnNumber() {
         return turnNumber;
+    }
+
+    public void saveGameToPgnFile(Path path) {
+        PgnSaver pgnSaver = new PgnSaver();
+        pgnSaver.saveGameToPgnFile(path, moveHistory, boardHistory, gameState);
     }
 
     private void nextTurn() {

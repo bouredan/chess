@@ -12,6 +12,7 @@
             <Label>Chess</Label>
             <Button fx:id="startButton" onAction="#startNewGame">Start game</Button>
             <Button fx:id="loadGameButton" onAction="#loadGame">Load game</Button>
+            <Button fx:id="saveGameButton" onAction="#saveGame">Save game</Button>
         </HBox>
     </top>
     <center>

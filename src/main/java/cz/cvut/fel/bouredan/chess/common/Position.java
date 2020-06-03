@@ -40,7 +40,7 @@ public class Position {
     }
 
     public char getRank() {
-        return (char) ('0' + y);
+        return (char) ('1' + y);
     }
 
     @Override

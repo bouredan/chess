@@ -7,6 +7,7 @@ import cz.cvut.fel.bouredan.chess.game.Move;
 import javafx.scene.control.Label;
 import javafx.stage.Popup;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -42,6 +43,10 @@ public class BoardController {
         remarkPossibleMoves(null);
         playMoveTo(clickedPosition);
         currentClickedPosition = null;
+    }
+
+    public void saveGameToPgnFile(Path path) {
+        game.saveGameToPgnFile(path);
     }
 
     public void displayPreviousBoard() {

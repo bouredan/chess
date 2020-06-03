@@ -73,18 +73,6 @@ public class Board {
                 .collect(Collectors.toList());
     }
 
-    public boolean hasPlayerAnyPossibleMoves(boolean isWhite, Move previousMove) {
-        for (int x = 0; x < BOARD_SIZE; x++) {
-            for (int y = 0; y < BOARD_SIZE; y++) {
-                Position position = new Position(x, y);
-                if (tileAt(position).isOccupiedByColor(isWhite) && !getPossibleMoves(position, isWhite, previousMove).isEmpty()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public boolean isKingInCheck(boolean isWhite) {
         Position kingPosition = getKingPosition(isWhite);
         return getPiecesAttackingPosition(kingPosition, !isWhite).size() > 0;
@@ -121,8 +109,16 @@ public class Board {
         return tile != null && !tile.isOccupiedByColor(isWhite);
     }
 
-    public Tile[][] getTiles() {
-        return tiles;
+    public boolean hasPlayerAnyPossibleMoves(boolean isWhite, Move previousMove) {
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                Position position = new Position(x, y);
+                if (tileAt(position).isOccupiedByColor(isWhite) && !getPossibleMoves(position, isWhite, previousMove).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public List<Position> getPossibleFromPositions(PieceType movedPieceType, Position moveTo, boolean isWhite) {
@@ -134,6 +130,10 @@ public class Board {
                     && piece.getPieceType() == movedPieceType
                     && piece.canMoveTo(this, tile.getPosition(), moveTo);
         });
+    }
+
+    public Tile[][] getTiles() {
+        return copyTiles();
     }
 
     private Board() {
