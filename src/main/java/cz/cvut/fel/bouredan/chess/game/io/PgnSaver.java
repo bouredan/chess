@@ -4,6 +4,7 @@ import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.GameState;
 import cz.cvut.fel.bouredan.chess.game.Move;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
+import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -53,10 +54,9 @@ public class PgnSaver {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(move.getMovedPieceType().getNotation());
         boolean isCaptureMove = move.isCaptureMove(boardBeforeMove);
-        if (isCaptureMove) {
+        if (isCaptureMove && move.getMovedPieceType() == PieceType.PAWN) {
             stringBuilder.append(move.from().getFile());
-        }
-        if (possibleFromPositions.size() > 1) {
+        } else if (possibleFromPositions.size() > 1) {
             possibleFromPositions.remove(move.from());
             Optional<Position> positionInSameFile = possibleFromPositions.stream().filter(position -> position.y() == move.from().y()).findFirst();
             Optional<Position> positionInSameRank = possibleFromPositions.stream().filter(position -> position.x() == move.from().x()).findFirst();
@@ -77,7 +77,7 @@ public class PgnSaver {
 
     private String resolveCheckNotation(Move move, Board boardAfterMove, boolean isWhite) {
         if (boardAfterMove.isKingInCheck(!isWhite)) {
-            return boardAfterMove.hasPlayerAnyPossibleMoves(!isWhite, move) ? "+" : "";
+            return boardAfterMove.hasPlayerAnyPossibleMoves(!isWhite, move) ? "+" : "#";
         }
         return "";
     }

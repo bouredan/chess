@@ -17,6 +17,7 @@ public class ChessApplication extends Application {
 
     @Override
     public void start(Stage stage) {
+        loadLoggingProperties();
         stage.setTitle("Chess game");
         stage.setScene(loadSceneFromFxml());
         stage.show();
@@ -33,7 +34,7 @@ public class ChessApplication extends Application {
     }
 
     private void loadLoggingProperties() {
-        URL loggingProperties = ChessApplication.class.getClassLoader().getResource("logging.properties");
+        URL loggingProperties = getClass().getResource("logging.properties");
         if (loggingProperties != null) {
             System.setProperty("java.util.logging.config.file", loggingProperties.getFile());
         }

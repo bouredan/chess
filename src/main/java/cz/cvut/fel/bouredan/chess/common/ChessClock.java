@@ -71,7 +71,7 @@ public class ChessClock {
                 logger.info(Utils.getPlayerSideName(isWhitePlayer) + " has run out of time!");
                 return;
             }
-            logger.info( Utils.getPlayerSideName(isWhitePlayer) + " player has " + remainingSeconds + "s remaining left.");
+            logger.finer( Utils.getPlayerSideName(isWhitePlayer) + " player has " + remainingSeconds + "s remaining left.");
             remainingSecondsMap.put(isWhitePlayer, remainingSeconds - 1);
         }
     }

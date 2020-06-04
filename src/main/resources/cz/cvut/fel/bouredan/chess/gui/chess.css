@@ -1,15 +1,42 @@
+/* Menu */
+.menu {
+    -fx-background-color: #333;
+    -fx-padding: 0;
+}
+
+.menu-item {
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px 10px 20px;
+    -fx-background-radius: 0;
+}
+
+.menu-item:focused {
+    -fx-background-color: #333;
+}
+
+.menu-item:hover {
+    -fx-background-color: #1d63dc;
+}
+
+/* Board */
+.board {
+    -fx-alignment: center;
+    -fx-padding: 10px;
+}
+
 .file-label {
+    -fx-alignment: center;
     -fx-pref-width: 90;
     -fx-pref-height: 20;
-    -fx-alignment: center;
 }
 
 .rank-label {
+    -fx-alignment: center;
     -fx-pref-width: 20;
     -fx-pref-height: 90;
-    -fx-alignment: center;
 }
 
+/* Tiles */
 .tile {
     -fx-pref-width: 90;
     -fx-pref-height: 90;
@@ -29,12 +56,39 @@
     -fx-background-color: #b58863;
 }
 
+.last-move-tile {
+    -fx-background-color: #fffdaf;
+}
+
 .possible-move-tile {
-    -fx-background-color: yellow;
+    -fx-background-color: #fdfa72;
+}
+
+/* Chess clock */
+.chess-clock-box {
+    -fx-pref-width: 150px;
+    -fx-pref-height: 60px;
+    -fx-padding: 20px;
+    -fx-spacing: 20px;
+}
+
+.chess-clock {
+    -fx-font-size: 20px;
+}
+
+/* Board history */
+.board-history {
+    -fx-alignment: center;
+    -fx-padding: 5px 0 20px 0;
+    -fx-spacing: 50px;
+}
+
+.board-history-button {
+    -fx-alignment: center;
+    -fx-padding: 10px 80px 10px 80px;
 }
 
 /* White pieces classes */
-
 .white-pawn {
     -fx-background-image: url("pieces/WP.png");
 }
@@ -64,7 +118,6 @@
 }
 
 /* Black pieces classes */
-
 .black-rook {
     -fx-background-image: url("pieces/BR.png");
 }
@@ -83,8 +136,4 @@
 
 .black-king {
     -fx-background-image: url("pieces/BK.png");
-}
-
-.board-history-button {
-    -fx-alignment: center;
 }

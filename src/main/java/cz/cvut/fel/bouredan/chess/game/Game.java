@@ -39,6 +39,7 @@ public class Game {
         board = board.performMove(move);
         boardHistory.add(board);
         moveHistory.add(move);
+        turnNumber++;
 
         // Player cannot move with any piece -> either checkmate or stalemate
         if (!board.hasPlayerAnyPossibleMoves(!isWhiteOnTurn(), move)) {
@@ -81,8 +82,23 @@ public class Game {
         return board;
     }
 
-    public Board getBoard(int index) {
-        return boardHistory.get(index);
+    public Board getBoard(int turnNumber) {
+        return boardHistory.get(turnNumber);
+    }
+
+    public Move getMove(int turnNumber) {
+        return moveHistory.get(turnNumber);
+    }
+
+    public Move getLastMove() {
+        if (moveHistory.size() == 0) {
+            return null;
+        }
+        return moveHistory.get(moveHistory.size() - 1);
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 
     public int getTurnNumber() {
@@ -96,13 +112,5 @@ public class Game {
 
     private void nextTurn() {
         playerOnTurn = isWhiteOnTurn() ? blackPlayer : whitePlayer;
-        turnNumber++;
-    }
-
-    private Move getLastMove() {
-        if (moveHistory.size() == 0) {
-            return null;
-        }
-        return moveHistory.get(moveHistory.size() - 1);
     }
 }

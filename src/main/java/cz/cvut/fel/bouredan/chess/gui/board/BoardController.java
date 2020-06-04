@@ -36,6 +36,21 @@ public class BoardController {
         this.currentBoardShown = game.getTurnNumber() - 1;
     }
 
+    public void startGame() {
+        boardView.displayBoard(game.getBoard());
+        if (currentBoardShown != 0) {
+            markNewLastMove(game.getLastMove());
+            gameStateConsumer.accept(game.getGameState());
+        }
+        if (game.getGameState() != GameState.PLAYING) {
+            isGameEditable = false;
+            return;
+        }
+        if (chessClock != null) {
+            chessClock.startClock();
+        }
+    }
+
     public void handleClick(Position clickedPosition) {
         if (!isGameEditable) {
             return;
@@ -55,49 +70,44 @@ public class BoardController {
         currentClickedPosition = null;
     }
 
-    public void endGame() {
-        if (chessClock != null) {
-            chessClock.endGame();
-        }
-        isGameEditable = false;
-    }
-
-    public void saveGameToPgnFile(Path path) {
-        game.saveGameToPgnFile(path);
-    }
-
-    public void displayPreviousBoard() {
-        int wantedBoardIndex = currentBoardShown - 1;
-        displayBoard(wantedBoardIndex);
-    }
-
-    public void displayNextBoard() {
-        int wantedBoardIndex = currentBoardShown + 1;
-        displayBoard(wantedBoardIndex);
-    }
-
     private void handleMoveTo(Position moveTo) {
         Move move = createMove(moveTo);
+        if (move == null) {
+            return;
+        }
         GameState gameState = game.playMove(move);
         boardView.displayBoard(game.getBoard());
-        chessClock.switchClock();
+        currentBoardShown++;
+        markNewLastMove(move);
+        if (chessClock != null) {
+            chessClock.switchClock();
+        }
         gameStateConsumer.accept(gameState);
     }
 
     private Move createMove(Position moveTo) {
         if (Utils.isMovePawnPromotion(game.getBoard(), currentClickedPosition, moveTo)) {
-            logger.fine("Pawn promotion.");
-            return game.createMove(currentClickedPosition, moveTo, showPawnPromotionSelect());
+            logger.info("Pawn promotion.");
+            Piece chosenPromotePieceTo = showPawnPromotionSelect();
+            if (chosenPromotePieceTo != null) {
+                return game.createMove(currentClickedPosition, moveTo, chosenPromotePieceTo);
+            }
+            return null;
         }
         return game.createMove(currentClickedPosition, moveTo);
     }
 
-    private void displayBoard(int index) {
-        if (index < 0 || index >= game.getTurnNumber()) {
-            throw new IndexOutOfBoundsException("Board with index " + index + " does not exist.");
+    private void markNewLastMove(Move newLastMove) {
+        Move lastMove = game.getLastMove();
+        boardView.unmarkLastMove(lastMove.from(), lastMove.to());
+        boardView.markLastMove(newLastMove.from(), newLastMove.to());
+    }
+
+    public void endGame() {
+        if (chessClock != null) {
+            chessClock.endGame();
         }
-        boardView.displayBoard(game.getBoard(index));
-        currentBoardShown = index;
+        isGameEditable = false;
     }
 
     private void remarkPossibleMoves(Position clickedPosition) {
@@ -108,6 +118,36 @@ public class BoardController {
 
     private void unmarkPossibleMoves() {
         boardView.unmarkPossibleMoves(currentPossibleMoves);
+    }
+
+    public void saveGameToPgnFile(Path path) {
+        game.saveGameToPgnFile(path);
+    }
+
+    public int getTurnNumber() {
+        return game.getTurnNumber();
+    }
+
+    public int displayPreviousBoard() {
+        int wantedBoardIndex = currentBoardShown - 1;
+        return displayBoard(wantedBoardIndex);
+    }
+
+    public int displayNextBoard() {
+        int wantedBoardIndex = currentBoardShown + 1;
+        return displayBoard(wantedBoardIndex);
+    }
+
+    private int displayBoard(int index) {
+        if (index < 0 || index >= game.getTurnNumber()) {
+            throw new IndexOutOfBoundsException("Board with index " + index + " does not exist.");
+        }
+        boardView.displayBoard(game.getBoard(index));
+        if (index != 0) {
+            markNewLastMove(game.getMove(index - 1));
+        }
+        isGameEditable = index == game.getTurnNumber() - 1;
+        return currentBoardShown = index;
     }
 
     private Piece showPawnPromotionSelect() {

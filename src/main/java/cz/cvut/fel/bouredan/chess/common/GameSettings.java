@@ -21,6 +21,7 @@ public class GameSettings {
     public static final String WHITE_TILE_CLASS = "white-tile";
     public static final String BLACK_TILE_CLASS = "black-tile";
     public static final String POSSIBLE_MOVE_TILE_CLASS = "possible-move-tile";
+    public static final String LAST_MOVE_TILE_CLASS = "last-move-tile";
 
     // CSS classes - pieces
     public static final String WHITE_PAWN_CLASS = "white-pawn";
@@ -53,7 +54,7 @@ public class GameSettings {
     }
 
     public static List<Piece> getPossiblePawnPromotions(boolean isWhite) {
-        return List.of(new Queen(isWhite), new Rook(isWhite), new Knight(isWhite), new Bishop(isWhite), new Pawn(isWhite));
+        return List.of(new Queen(isWhite), new Rook(isWhite), new Knight(isWhite), new Bishop(isWhite));
     }
 
     private static void buildStartingBoardSide(Tile[][] tiles, int pawnRank, int otherPiecesRank, boolean isWhite) {

@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import cz.cvut.fel.bouredan.chess.gui.board.BoardView?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<BorderPane fx:id="rootBorderPane" xmlns:fx="http://javafx.com/fxml" prefHeight="900.0" prefWidth="900.0"
-            fx:controller="cz.cvut.fel.bouredan.chess.gui.ApplicationController" stylesheets="@board.css">
+<?import javafx.scene.layout.*?>
+<BorderPane fx:id="rootBorderPane" prefHeight="900.0" prefWidth="900.0" stylesheets="@chess.css"
+            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.2-internal"
+            fx:controller="cz.cvut.fel.bouredan.chess.gui.ApplicationController">
     <top>
-        <HBox>
-            <Label>Chess</Label>
-            <Button fx:id="startButton" onAction="#startNewGame">Start game</Button>
-            <Button fx:id="loadGameButton" onAction="#loadGame">Load game</Button>
-            <Button fx:id="saveGameButton" onAction="#saveGame">Save game</Button>
+        <HBox styleClass="menu">
+            <Button onAction="#startNewGame" styleClass="menu-item">Start new game</Button>
+            <Button onAction="#loadGame" styleClass="menu-item">Load game</Button>
+            <Button onAction="#saveGame" styleClass="menu-item">Save game</Button>
         </HBox>
     </top>
     <center>
-        <BoardView fx:id="boardView"/>
+        <BoardView fx:id="boardView" styleClass="board"/>
     </center>
     <right>
-        <VBox>
-            <Label fx:id="whiteTimer"/>
-            <Label fx:id="blackTimer"/>
+        <VBox alignment="CENTER" styleClass="chess-clock-box">
+            <VBox>
+                <Label text="Black"/>
+                <Label fx:id="blackTimer" styleClass="chess-clock"/>
+            </VBox>
+            <VBox>
+                <Label text="White"/>
+                <Label fx:id="whiteTimer" styleClass="chess-clock"/>
+            </VBox>
         </VBox>
     </right>
     <bottom>
-        <HBox>
-            <Button onAction="#displayPreviousBoard" styleClass="board-history-button">&lt;</Button>
-            <Button onAction="#displayNextBoard" styleClass="board-history-button">&gt;</Button>
+        <HBox styleClass="board-history">
+            <Button fx:id="previousBoardButton" onAction="#displayPreviousBoard" styleClass="board-history-button" disable="true">
+                &lt;
+            </Button>
+            <Button fx:id="nextBoardButton" onAction="#displayNextBoard" styleClass="board-history-button" disable="true">
+                &gt;
+            </Button>
         </HBox>
     </bottom>
 </BorderPane>

@@ -31,15 +31,6 @@ public class ApplicationController {
     private BorderPane rootBorderPane;
 
     @FXML
-    private Button startButton;
-
-    @FXML
-    private Button loadGameButton;
-
-    @FXML
-    private Button saveGameButton;
-
-    @FXML
     private Label whiteTimer;
 
     @FXML
@@ -47,6 +38,12 @@ public class ApplicationController {
 
     @FXML
     private BoardView boardView;
+
+    @FXML
+    private Button previousBoardButton;
+
+    @FXML
+    private Button nextBoardButton;
 
     private BoardController boardController;
 
@@ -58,7 +55,7 @@ public class ApplicationController {
     @FXML
     private void startNewGame() {
         Game game = new Game();
-        startGame(game);
+        startGame(game, true);
     }
 
     @FXML
@@ -73,7 +70,7 @@ public class ApplicationController {
 
         PgnLoader pgnLoader = new PgnLoader();
         Game game = pgnLoader.loadGame(selectedFile.toPath());
-        startGame(game);
+        startGame(game, false);
     }
 
     @FXML
@@ -92,28 +89,34 @@ public class ApplicationController {
         boardController.saveGameToPgnFile(path);
     }
 
-    private void startGame(Game game) {
+    private void startGame(Game game, boolean startChessClock) {
         endGameIfRunning();
         logger.info("Started new game.");
-        ChessClock chessClock = initializeChessClock();
+        ChessClock chessClock = startChessClock ? initializeChessClock() : null;
         boardController = new BoardController(boardView, game, chessClock, this::handleGameState);
         boardView.setBoardController(boardController);
-        boardView.displayBoard(game.getBoard());
-        chessClock.startClock();
+        boardController.startGame();
     }
 
     @FXML
     private void displayPreviousBoard() {
-        boardController.displayPreviousBoard();
+        if (boardController != null) {
+            int currentBoardShown = boardController.displayPreviousBoard();
+            disableShowBoardButtonsIfNeeded(currentBoardShown);
+        }
     }
 
     @FXML
     private void displayNextBoard() {
-        boardController.displayNextBoard();
+        if (boardController != null) {
+            int currentBoardShown = boardController.displayNextBoard();
+            disableShowBoardButtonsIfNeeded(currentBoardShown);
+        }
     }
 
     private void handleGameState(GameState gameState) {
         Alert popUp = new Alert(Alert.AlertType.INFORMATION);
+        disableShowBoardButtonsIfNeeded(boardController.getTurnNumber() - 1);
         switch (gameState) {
             case PLAYING:
                 return;
@@ -165,6 +168,13 @@ public class ApplicationController {
         if (boardController != null) {
             boardController.endGame();
         }
+        whiteTimer.setText("");
+        blackTimer.setText("");
+    }
+
+    private void disableShowBoardButtonsIfNeeded(int currentBoardShown) {
+        previousBoardButton.setDisable(currentBoardShown == 0);
+        nextBoardButton.setDisable(currentBoardShown == boardController.getTurnNumber() - 1);
     }
 
     private String getSecondsInTimeFormat(long remainingSeconds) {

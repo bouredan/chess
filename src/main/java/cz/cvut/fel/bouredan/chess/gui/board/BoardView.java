@@ -48,6 +48,16 @@ public class BoardView extends GridPane {
         }
     }
 
+    public void unmarkLastMove(Position from, Position to) {
+        tileButtons[from.invertY().x()][from.invertY().y()].getStyleClass().remove(LAST_MOVE_TILE_CLASS);
+        tileButtons[to.invertY().x()][to.invertY().y()].getStyleClass().remove(LAST_MOVE_TILE_CLASS);
+    }
+
+    public void markLastMove(Position from, Position to) {
+        tileButtons[from.invertY().x()][from.invertY().y()].getStyleClass().add(LAST_MOVE_TILE_CLASS);
+        tileButtons[to.invertY().x()][to.invertY().y()].getStyleClass().add(LAST_MOVE_TILE_CLASS);
+    }
+
     public void setBoardController(BoardController boardController) {
         this.boardController = boardController;
     }

@@ -3,6 +3,7 @@ package cz.cvut.fel.bouredan.chess.game.io;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.Game;
+import cz.cvut.fel.bouredan.chess.game.GameState;
 import cz.cvut.fel.bouredan.chess.game.Move;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.piece.Piece;
@@ -39,17 +40,23 @@ public class PgnLoader {
     private Game playOutGame(String fileContent) {
         Matcher matcher = TURN_REGEX_PATTERN.matcher(fileContent);
         while (matcher.find()) {
-            playTurn(matcher.group(1), matcher.group(2), matcher.group(3));
+            GameState gameState = playTurn(matcher.group(1), matcher.group(2), matcher.group(3));
+            if (gameState != GameState.PLAYING) {
+                break;
+            }
         }
         return game;
     }
 
-    private void playTurn(String turnNumberText, String whiteMoveText, String blackMoveText) {
+    private GameState playTurn(String turnNumberText, String whiteMoveText, String blackMoveText) {
         checkTurnNumber(turnNumberText);
         // White move
-        game.playMove(resolveMove(whiteMoveText, true));
+        GameState gameState = game.playMove(resolveMove(whiteMoveText, true));
+        if (gameState != GameState.PLAYING) {
+            return gameState;
+        }
         // Black move
-        game.playMove(resolveMove(blackMoveText, false));
+        return game.playMove(resolveMove(blackMoveText, false));
     }
 
     private void checkTurnNumber(String turnNumberText) {
