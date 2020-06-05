@@ -5,40 +5,18 @@ import cz.cvut.fel.bouredan.chess.game.board.Tile;
 import cz.cvut.fel.bouredan.chess.game.piece.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 public class GameSettings {
 
+    private static final Logger logger = Logger.getLogger(GameSettings.class.getName());
+
     // Board size
     public static final int BOARD_SIZE = 8;
-
-    // Timers
-    public static final long TIMER_SECONDS = 600;
-
-    // CSS classes
-    public static final String FILE_LABEL_CLASS = "file-label";
-    public static final String RANK_LABEL_CLASS = "rank-label";
-    public static final String TILE_CLASS = "tile";
-    public static final String WHITE_TILE_CLASS = "white-tile";
-    public static final String BLACK_TILE_CLASS = "black-tile";
-    public static final String POSSIBLE_MOVE_TILE_CLASS = "possible-move-tile";
-    public static final String LAST_MOVE_TILE_CLASS = "last-move-tile";
-
-    // CSS classes - pieces
-    public static final String WHITE_PAWN_CLASS = "white-pawn";
-    public static final String WHITE_ROOK_CLASS = "white-rook";
-    public static final String WHITE_KNIGHT_CLASS = "white-knight";
-    public static final String WHITE_BISHOP_CLASS = "white-bishop";
-    public static final String WHITE_QUEEN_CLASS = "white-queen";
-    public static final String WHITE_KING_CLASS = "white-king";
-
-    public static final String BLACK_PAWN_CLASS = "black-pawn";
-    public static final String BLACK_ROOK_CLASS = "black-rook";
-    public static final String BLACK_KNIGHT_CLASS = "black-knight";
-    public static final String BLACK_BISHOP_CLASS = "black-bishop";
-    public static final String BLACK_QUEEN_CLASS = "black-queen";
-    public static final String BLACK_KING_CLASS = "black-king";
+    public static final long CHESS_CLOCK_SECONDS = 600;
 
     public static Board buildDefaultStartingBoard() {
+        logger.info("Building default starting board.");
         Tile[][] tiles = new Tile[BOARD_SIZE][BOARD_SIZE];
 
         buildStartingBoardSide(tiles, 1, 0, true);

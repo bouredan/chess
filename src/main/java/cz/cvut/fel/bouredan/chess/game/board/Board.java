@@ -10,6 +10,7 @@ import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static cz.cvut.fel.bouredan.chess.common.GameSettings.BOARD_SIZE;
@@ -18,6 +19,8 @@ import static cz.cvut.fel.bouredan.chess.common.GameSettings.BOARD_SIZE;
  * Keeps the state of the board.
  */
 public class Board {
+
+    private static final Logger logger = Logger.getLogger(Board.class.getName());
 
     private final Tile[][] tiles;
 
@@ -34,6 +37,7 @@ public class Board {
     }
 
     public Board performMove(Move move) {
+        logger.info("Moving piece from " + move.from().getPositionNotation() + " to " + move.to().getPositionNotation());
         if (move.isCastlingMove()) {
             return performCastlingMove(move);
         } else if (isEnPassantMove(move)) {
@@ -145,6 +149,7 @@ public class Board {
     }
 
     private Board performCastlingMove(Move move) {
+        logger.info("Performing castling.");
         setPieceHasMovedToTrue(move.from());
         Board boardAfterKingMove = movePiece(move.from(), move.to());
 
@@ -157,6 +162,7 @@ public class Board {
     }
 
     private Board performEnPassantMove(Move move) {
+        logger.info("Performing en passant move.");
         Position capturedPawnPosition = move.to().copy(0, tileAt(move.from()).getPiece().isWhite() ? -1 : 1);
         Tile[][] newTiles = movePiece(move.from(), move.to()).copyTiles();
         newTiles[capturedPawnPosition.x()][capturedPawnPosition.y()] = new Tile(capturedPawnPosition);
@@ -164,6 +170,7 @@ public class Board {
     }
 
     private Board performPromotionMove(Move move) {
+        logger.info("Performing pawn promotion.");
         Tile[][] tilesAfterPawnMove = movePiece(move.from(), move.to()).copyTiles();
         tilesAfterPawnMove[move.to().x()][move.to().y()] = new Tile(move.to(), move.getPromotePawnTo());
         return new Board(tilesAfterPawnMove);

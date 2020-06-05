@@ -8,11 +8,11 @@ public enum PieceType {
     KNIGHT("N"),
     ROOK("R");
 
+    private final String notation;
+
     PieceType(String notation) {
         this.notation = notation;
     }
-
-    private final String notation;
 
     public String getNotation() {
         return notation;

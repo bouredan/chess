@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
 
-import static cz.cvut.fel.bouredan.chess.common.GameSettings.TIMER_SECONDS;
+import static cz.cvut.fel.bouredan.chess.common.GameSettings.CHESS_CLOCK_SECONDS;
 import static cz.cvut.fel.bouredan.chess.common.Utils.getPlayerSideName;
 
 public class ApplicationController {
@@ -91,7 +91,7 @@ public class ApplicationController {
 
     private void startGame(Game game, boolean startChessClock) {
         endGameIfRunning();
-        logger.info("Started new game.");
+        logger.info("Starting new game.");
         ChessClock chessClock = startChessClock ? initializeChessClock() : null;
         boardController = new BoardController(boardView, game, chessClock, this::handleGameState);
         boardView.setBoardController(boardController);
@@ -139,7 +139,8 @@ public class ApplicationController {
     }
 
     private ChessClock initializeChessClock() {
-        ChessClock chessClock = new ChessClock(TIMER_SECONDS, TIMER_SECONDS, true,
+        logger.info("Initializing chess clock.");
+        ChessClock chessClock = new ChessClock(CHESS_CLOCK_SECONDS, CHESS_CLOCK_SECONDS, true,
                 (isWhitePlayerTime, remainingSeconds) -> Platform.runLater(() -> {
                     if (isWhitePlayerTime) {
                         whiteTimer.setText(getSecondsInTimeFormat(remainingSeconds));
@@ -150,8 +151,8 @@ public class ApplicationController {
                         handleRunOutOfTime(isWhitePlayerTime);
                     }
                 }));
-        whiteTimer.setText(getSecondsInTimeFormat(TIMER_SECONDS));
-        blackTimer.setText(getSecondsInTimeFormat(TIMER_SECONDS));
+        whiteTimer.setText(getSecondsInTimeFormat(CHESS_CLOCK_SECONDS));
+        blackTimer.setText(getSecondsInTimeFormat(CHESS_CLOCK_SECONDS));
         return chessClock;
     }
 
@@ -166,6 +167,7 @@ public class ApplicationController {
 
     private void endGameIfRunning() {
         if (boardController != null) {
+            logger.info("A game was running, so it was ended.");
             boardController.endGame();
         }
         whiteTimer.setText("");

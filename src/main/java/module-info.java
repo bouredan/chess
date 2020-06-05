@@ -6,6 +6,7 @@ module cz.cvut.fel.bouredan.chess {
 
     opens cz.cvut.fel.bouredan.chess to javafx.fxml, javafx.graphics;
     opens cz.cvut.fel.bouredan.chess.gui to javafx.fxml, javafx.graphics;
+    opens cz.cvut.fel.bouredan.chess.gui.board to javafx.fxml, javafx.graphics;
 
     exports cz.cvut.fel.bouredan.chess.common;
     exports cz.cvut.fel.bouredan.chess.game;

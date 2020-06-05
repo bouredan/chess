@@ -1,6 +1,5 @@
 package cz.cvut.fel.bouredan.chess.game.piece;
 
-import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 
@@ -46,8 +45,4 @@ public class Pawn extends Piece {
         return possibleMoves;
     }
 
-    @Override
-    public String getStyle() {
-        return isWhite() ? GameSettings.WHITE_PAWN_CLASS : GameSettings.BLACK_PAWN_CLASS;
-    }
 }

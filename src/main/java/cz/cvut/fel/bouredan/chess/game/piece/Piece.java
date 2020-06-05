@@ -19,8 +19,6 @@ public abstract class Piece {
 
     public abstract List<Position> getPossibleMoves(Board board, Position currentPosition);
 
-    public abstract String getStyle();
-
     public boolean canMoveTo(Board board, Position from, Position to) {
         return getPossibleMoves(board, from).contains(to);
     }
