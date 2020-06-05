@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -24,6 +25,7 @@ public class ChessApplication extends Application {
 
     /**
      * Starts GUI application, loads logging properties and images.
+     *
      * @param stage
      */
     @Override
@@ -48,9 +50,16 @@ public class ChessApplication extends Application {
 
     private void loadLoggingProperties() {
         URL loggingProperties = getClass().getResource("logging.properties");
-        if (loggingProperties != null && System.getProperty("java.util.logging.config.file") == null) {
-            logger.config("Logging.properties file found. Adding it as property.");
-            System.setProperty("java.util.logging.config.file", loggingProperties.getFile());
+        String propertyValue = System.getProperty("java.util.logging.config.file");
+        if (propertyValue != null || loggingProperties == null) {
+            return;
+        }
+        System.setProperty("java.util.logging.config.file", loggingProperties.getFile());
+        try {
+            LogManager.getLogManager().readConfiguration();
+            logger.config("Logging.properties file was found and successfully read.");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

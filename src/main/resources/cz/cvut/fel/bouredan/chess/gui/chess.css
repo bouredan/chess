@@ -26,12 +26,14 @@
 
 .file-label {
     -fx-alignment: center;
+    -fx-padding: 5px;
     -fx-pref-width: 90;
     -fx-pref-height: 20;
 }
 
 .rank-label {
     -fx-alignment: center;
+    -fx-padding: 5px;
     -fx-pref-width: 20;
     -fx-pref-height: 90;
 }
@@ -79,7 +81,7 @@
 /* Board history */
 .board-history {
     -fx-alignment: center;
-    -fx-padding: 5px 0 20px 0;
+    -fx-padding: 0 0 20px 0;
     -fx-spacing: 50px;
 }
 

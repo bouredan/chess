@@ -36,7 +36,6 @@ public class PgnLoader {
      * @return constructed game according to the file
      */
     public Game loadGame(Path path) {
-        game = new Game();
         String fileContent = loadFileContent(path);
         return playOutGame(fileContent);
     }
@@ -50,8 +49,9 @@ public class PgnLoader {
         }
     }
 
-    private Game playOutGame(String fileContent) {
-        Matcher matcher = TURN_REGEX_PATTERN.matcher(fileContent);
+    public Game playOutGame(String pgnGameString) {
+        game = new Game();
+        Matcher matcher = TURN_REGEX_PATTERN.matcher(pgnGameString);
         while (matcher.find()) {
             GameState gameState = playTurn(matcher.group(1), matcher.group(2), matcher.group(3));
             if (gameState != GameState.PLAYING) {
