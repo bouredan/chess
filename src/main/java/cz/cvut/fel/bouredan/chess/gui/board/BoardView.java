@@ -17,9 +17,12 @@ import java.util.logging.Logger;
 
 import static cz.cvut.fel.bouredan.chess.common.GameSettings.BOARD_SIZE;
 
+/**
+ * Board view. Shows the board to user, marks possible moves etc.
+ */
 public class BoardView extends GridPane {
 
-    private static Logger logger = Logger.getLogger(BoardView.class.getName());
+    private static final Logger logger = Logger.getLogger(BoardView.class.getName());
 
     private final TileView[][] tileButtons = new TileView[BOARD_SIZE][BOARD_SIZE];
     private BoardController boardController;
@@ -29,6 +32,9 @@ public class BoardView extends GridPane {
         addRanksAndFilesLabels();
     }
 
+    /**
+     * @param board display this board
+     */
     public void displayBoard(Board board) {
         Tile[][] tiles = board.getTiles();
         for (int x = 0; x < BOARD_SIZE; x++) {
@@ -38,6 +44,10 @@ public class BoardView extends GridPane {
         }
     }
 
+    /**
+     * Mark positions where can currently selected piece move.
+     * @param positions
+     */
     public void markPossibleMoves(List<Position> positions) {
         for (Position position : positions) {
             Position invertedPosition = position.invertY();
@@ -45,6 +55,10 @@ public class BoardView extends GridPane {
         }
     }
 
+    /**
+     * Unmark positions where can currently selected piece move.
+     * @param positions
+     */
     public void unmarkPossibleMoves(List<Position> positions) {
         for (Position position : positions) {
             Position invertedPosition = position.invertY();
@@ -52,16 +66,29 @@ public class BoardView extends GridPane {
         }
     }
 
-    public void unmarkLastMove(Position from, Position to) {
-        tileButtons[from.invertY().x()][from.invertY().y()].getStyleClass().remove(GuiSettings.LAST_MOVE_TILE_CLASS);
-        tileButtons[to.invertY().x()][to.invertY().y()].getStyleClass().remove(GuiSettings.LAST_MOVE_TILE_CLASS);
-    }
-
+    /**
+     * Marks move played before
+     * @param from
+     * @param to
+     */
     public void markLastMove(Position from, Position to) {
         tileButtons[from.invertY().x()][from.invertY().y()].getStyleClass().add(GuiSettings.LAST_MOVE_TILE_CLASS);
         tileButtons[to.invertY().x()][to.invertY().y()].getStyleClass().add(GuiSettings.LAST_MOVE_TILE_CLASS);
     }
 
+    /**
+     * Marks move played before
+     * @param from
+     * @param to
+     */
+    public void unmarkLastMove(Position from, Position to) {
+        tileButtons[from.invertY().x()][from.invertY().y()].getStyleClass().remove(GuiSettings.LAST_MOVE_TILE_CLASS);
+        tileButtons[to.invertY().x()][to.invertY().y()].getStyleClass().remove(GuiSettings.LAST_MOVE_TILE_CLASS);
+    }
+
+    /**
+     * @param boardController sets this a new board controller
+     */
     public void setBoardController(BoardController boardController) {
         this.boardController = boardController;
     }

@@ -23,6 +23,9 @@ import java.util.logging.Logger;
 import static cz.cvut.fel.bouredan.chess.common.GameSettings.CHESS_CLOCK_SECONDS;
 import static cz.cvut.fel.bouredan.chess.common.Utils.getPlayerSideName;
 
+/**
+ * Main application controller, includes menu, starting game, etc.
+ */
 public class ApplicationController {
 
     private static final Logger logger = Logger.getLogger(ApplicationController.class.getName());
@@ -52,12 +55,18 @@ public class ApplicationController {
         boardView.displayBoard(Board.buildClearBoard());
     }
 
+    /**
+     * Starts new game
+     */
     @FXML
     private void startNewGame() {
         Game game = new Game();
         startGame(game, true);
     }
 
+    /**
+     * Opens FileChooser and loads game from chosen file
+     */
     @FXML
     private void loadGame() {
         FileChooser fileChooser = new FileChooser();
@@ -73,6 +82,9 @@ public class ApplicationController {
         startGame(game, false);
     }
 
+    /**
+     * Saves current game to file chosen in FileChooser. Automatically appends .pgn file extension
+     */
     @FXML
     private void saveGame() {
         FileChooser fileChooser = new FileChooser();
@@ -89,15 +101,9 @@ public class ApplicationController {
         boardController.saveGameToPgnFile(path);
     }
 
-    private void startGame(Game game, boolean startChessClock) {
-        endGameIfRunning();
-        logger.info("Starting new game.");
-        ChessClock chessClock = startChessClock ? initializeChessClock() : null;
-        boardController = new BoardController(boardView, game, chessClock, this::handleGameState);
-        boardView.setBoardController(boardController);
-        boardController.startGame();
-    }
-
+    /**
+     * Displays previous board
+     */
     @FXML
     private void displayPreviousBoard() {
         if (boardController != null) {
@@ -106,12 +112,24 @@ public class ApplicationController {
         }
     }
 
+    /**
+     * Displays next board
+     */
     @FXML
     private void displayNextBoard() {
         if (boardController != null) {
             int currentBoardShown = boardController.displayNextBoard();
             disableShowBoardButtonsIfNeeded(currentBoardShown);
         }
+    }
+
+    private void startGame(Game game, boolean startChessClock) {
+        endGameIfRunning();
+        logger.info("Starting new game.");
+        ChessClock chessClock = startChessClock ? initializeChessClock() : null;
+        boardController = new BoardController(boardView, game, chessClock, this::handleGameState);
+        boardView.setBoardController(boardController);
+        boardController.startGame();
     }
 
     private void handleGameState(GameState gameState) {

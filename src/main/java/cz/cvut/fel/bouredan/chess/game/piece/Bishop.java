@@ -5,6 +5,9 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 
 import java.util.List;
 
+/**
+ * Bishop piece class. Mainly for getting possible moves this piece type.
+ */
 public class Bishop extends Piece {
 
     public Bishop(boolean isWhite) {

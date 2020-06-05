@@ -1,15 +1,17 @@
 package cz.cvut.fel.bouredan.chess.game;
 
-import cz.cvut.fel.bouredan.chess.game.piece.Piece;
-
-import java.util.List;
-
+/**
+ * Represents player
+ */
 public class Player {
 
     private final String name;
     private final boolean isWhite;
-    private List<Piece> pieces;
 
+    /**
+     * @param name name of the player
+     * @param isWhite is player playing white or black
+     */
     public Player(String name, boolean isWhite) {
         this.name = name;
         this.isWhite = isWhite;

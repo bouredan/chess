@@ -13,8 +13,18 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class for saving games in standard PGN format.
+ * @link http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm
+ */
 public class PgnSaver {
 
+    /**
+     * @param path save to file with this path
+     * @param moveHistory list of moves played this game
+     * @param boardHistory list of boards before and after each move
+     * @param gameState result of game
+     */
     public void saveGameToPgnFile(Path path, List<Move> moveHistory, List<Board> boardHistory, GameState gameState) {
         try {
             BufferedWriter writer = Files.newBufferedWriter(path);

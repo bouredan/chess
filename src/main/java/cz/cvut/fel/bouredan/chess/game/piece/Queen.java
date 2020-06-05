@@ -6,6 +6,9 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Queen piece class. Mainly for getting possible moves this piece type.
+ */
 public class Queen extends Piece {
 
     public Queen(boolean isWhite) {

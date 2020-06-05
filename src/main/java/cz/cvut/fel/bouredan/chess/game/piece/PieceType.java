@@ -1,5 +1,8 @@
 package cz.cvut.fel.bouredan.chess.game.piece;
 
+/**
+ * Enum for keeping all types of pieces, also its notations
+ */
 public enum PieceType {
     PAWN(""),
     KING("K"),

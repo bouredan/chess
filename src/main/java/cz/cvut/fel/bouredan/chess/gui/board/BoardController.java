@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+/**
+ * Controller for making moves on board
+ */
 public class BoardController {
 
     private static final Logger logger = Logger.getLogger(BoardController.class.getName());
@@ -28,6 +31,12 @@ public class BoardController {
     private Position currentClickedPosition;
     private List<Position> currentPossibleMoves = new ArrayList<>();
 
+    /**
+     * @param boardView board view
+     * @param game played game
+     * @param chessClock clock to keep track of time on turn
+     * @param gameStateConsumer game state consumer for handling end of game
+     */
     public BoardController(BoardView boardView, Game game, ChessClock chessClock, Consumer<GameState> gameStateConsumer) {
         this.boardView = boardView;
         this.game = game;
@@ -36,6 +45,9 @@ public class BoardController {
         this.currentBoardShown = game.getTurnNumber() - 1;
     }
 
+    /**
+     * starts this game
+     */
     public void startGame() {
         boardView.displayBoard(game.getBoard());
         if (currentBoardShown != 0) {
@@ -51,6 +63,11 @@ public class BoardController {
         }
     }
 
+    /**
+     * Handles TileView clicks, calls marking methods
+     *
+     * @param clickedPosition position which is now clicked
+     */
     public void handleClick(Position clickedPosition) {
         if (!isGameEditable) {
             return;
@@ -70,6 +87,9 @@ public class BoardController {
         currentClickedPosition = null;
     }
 
+    /**
+     * @param moveTo moves current clicked position to handleMoveTO
+     */
     private void handleMoveTo(Position moveTo) {
         Move move = createMove(moveTo);
         if (move == null) {
@@ -85,6 +105,10 @@ public class BoardController {
         gameStateConsumer.accept(gameState);
     }
 
+    /**
+     * @param moveTo move to
+     * @return new move
+     */
     private Move createMove(Position moveTo) {
         if (Utils.isMovePawnPromotion(game.getBoard(), currentClickedPosition, moveTo)) {
             logger.info("Pawn promotion.");
@@ -97,27 +121,14 @@ public class BoardController {
         return game.createMove(currentClickedPosition, moveTo);
     }
 
-    private void markNewLastMove(Move newLastMove) {
-        Move lastMove = game.getLastMove();
-        boardView.unmarkLastMove(lastMove.from(), lastMove.to());
-        boardView.markLastMove(newLastMove.from(), newLastMove.to());
-    }
-
+    /**
+     * Ends current game and locks it for editing.
+     */
     public void endGame() {
         if (chessClock != null) {
             chessClock.endGame();
         }
         isGameEditable = false;
-    }
-
-    private void remarkPossibleMoves(Position clickedPosition) {
-        unmarkPossibleMoves();
-        currentPossibleMoves = game.getPossibleMoves(clickedPosition);
-        boardView.markPossibleMoves(currentPossibleMoves);
-    }
-
-    private void unmarkPossibleMoves() {
-        boardView.unmarkPossibleMoves(currentPossibleMoves);
     }
 
     public void saveGameToPgnFile(Path path) {
@@ -128,14 +139,39 @@ public class BoardController {
         return game.getTurnNumber();
     }
 
+    /**
+     * Shows previous board
+     * @return number of board index
+     */
     public int displayPreviousBoard() {
         int wantedBoardIndex = currentBoardShown - 1;
         return displayBoard(wantedBoardIndex);
     }
 
+    /**
+     * Shows next board
+     * @return number of board index
+     */
     public int displayNextBoard() {
+
         int wantedBoardIndex = currentBoardShown + 1;
         return displayBoard(wantedBoardIndex);
+    }
+
+    private void markNewLastMove(Move newLastMove) {
+        Move lastMove = game.getLastMove();
+        boardView.unmarkLastMove(lastMove.from(), lastMove.to());
+        boardView.markLastMove(newLastMove.from(), newLastMove.to());
+    }
+
+    private void remarkPossibleMoves(Position clickedPosition) {
+        unmarkPossibleMoves();
+        currentPossibleMoves = game.getPossibleMoves(clickedPosition);
+        boardView.markPossibleMoves(currentPossibleMoves);
+    }
+
+    private void unmarkPossibleMoves() {
+        boardView.unmarkPossibleMoves(currentPossibleMoves);
     }
 
     private int displayBoard(int index) {

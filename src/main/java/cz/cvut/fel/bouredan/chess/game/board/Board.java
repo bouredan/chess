@@ -24,18 +24,35 @@ public class Board {
 
     private final Tile[][] tiles;
 
+
+    /**
+     * @param tiles 2D array of board tiles, expected to be 8x8 (BOARD_SIZE).
+     */
     public Board(Tile[][] tiles) {
         this.tiles = tiles;
     }
 
+    /**
+     * Builds starting board with starting pieces as in GameSettings.buildDefaultStartingBoard().
+     * @return starting board
+     */
     public static Board buildStartingBoard() {
         return GameSettings.buildDefaultStartingBoard();
     }
 
+    /**
+     * Builds board just with tiles, without pieces.
+     * @return board without pieces
+     */
     public static Board buildClearBoard() {
         return new Board();
     }
 
+    /**
+     * Performs move and handles special moves.
+     * @param move move to perform
+     * @return board after this move
+     */
     public Board performMove(Move move) {
         logger.info("Moving piece from " + move.from().getPositionNotation() + " to " + move.to().getPositionNotation());
         if (move.isCastlingMove()) {
@@ -49,6 +66,13 @@ public class Board {
         return movePiece(move.from(), move.to());
     }
 
+    /**
+     * Moves piece from to (in this model), no logic here.
+     *
+     * @param from
+     * @param to
+     * @return
+     */
     public Board movePiece(Position from, Position to) {
         Tile[][] newTiles = copyTiles();
         Tile tileFrom = tileAt(from);
@@ -58,6 +82,13 @@ public class Board {
         return new Board(newTiles);
     }
 
+    /**
+     * Returns list of possible moves from position, also takes in account special moves and checks.
+     * @param position from
+     * @param isWhiteOnTurn who is on turn
+     * @param previousMove for resolving en passant move
+     * @return
+     */
     public List<Position> getPossibleMoves(Position position, boolean isWhiteOnTurn, Move previousMove) {
         Tile tile = tileAt(position);
         if (tile == null || !tile.isOccupiedByColor(isWhiteOnTurn)) {
@@ -81,15 +112,31 @@ public class Board {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Return if is king of isWhite player in check.
+     * @param isWhite is player white
+     * @return true if king of the player is in check
+     */
     public boolean isKingInCheck(boolean isWhite) {
         Position kingPosition = getKingPosition(isWhite);
         return getPiecesAttackingPosition(kingPosition, !isWhite).size() > 0;
     }
 
+    /**
+     * Returns if there are any opponent's pieces attacking position
+     * @param attackedPosition
+     * @param isWhiteAttacker
+     * @return
+     */
     public boolean isTileAttacked(Position attackedPosition, boolean isWhiteAttacker) {
         return getPiecesAttackingPosition(attackedPosition, isWhiteAttacker).size() > 0;
     }
 
+    /**
+     * Returns Tile at position
+     * @param position
+     * @return
+     */
     public Tile tileAt(Position position) {
         if (position == null || !position.isWithinBoard()) {
             return null;
@@ -97,26 +144,54 @@ public class Board {
         return tiles[position.x()][position.y()];
     }
 
+    /**
+     *
+     * @param position
+     * @return true if there is a piece on this position
+     */
     public boolean isTileOccupied(Position position) {
         Tile tile = tileAt(position);
         return tile != null && tile.isOccupied();
     }
 
+    /**
+     *
+     * @param position
+     * @param isWhite
+     * @return true if there is a piece on this position and is of color isWhite
+     */
     public boolean isTileOccupiedByColor(Position position, boolean isWhite) {
         Tile tile = tileAt(position);
         return tile != null && tile.isOccupiedByColor(isWhite);
     }
 
+    /**
+     *
+     * @param position
+     * @return true if tile is withing board and there is no piece on it
+     */
     public boolean isTileWithinBoardAndNotOccupied(Position position) {
         Tile tile = tileAt(position);
         return tile != null && !tile.isOccupied();
     }
 
+    /**
+     *
+     * @param position
+     * @param isWhite
+     * @return true if tile is within board and is not occupied by a piece of color isWhite
+     */
     public boolean isTileWithinBoardAndNotOccupiedByColor(Position position, boolean isWhite) {
         Tile tile = tileAt(position);
         return tile != null && !tile.isOccupiedByColor(isWhite);
     }
 
+    /**
+     *
+     * @param isWhite
+     * @param previousMove for resolving en passant
+     * @return true if player has any possible moves to make (checks if it is not stalemate)
+     */
     public boolean hasPlayerAnyPossibleMoves(boolean isWhite, Move previousMove) {
         for (int x = 0; x < BOARD_SIZE; x++) {
             for (int y = 0; y < BOARD_SIZE; y++) {
@@ -129,6 +204,13 @@ public class Board {
         return false;
     }
 
+    /**
+     *
+     * @param movedPieceType
+     * @param moveTo
+     * @param isWhite
+     * @return list of positions which are occupied by pieces of type movedPieceType and can move to position moveTo
+     */
     public List<Position> getPossibleFromPositions(PieceType movedPieceType, Position moveTo, boolean isWhite) {
         return getPositionsWithPredicate(tile -> {
             Piece piece = tile.getPiece();
@@ -140,6 +222,10 @@ public class Board {
         });
     }
 
+    /**
+     *
+     * @return deep copy of 2D array of tiles
+     */
     public Tile[][] getTiles() {
         return copyTiles();
     }

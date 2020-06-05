@@ -7,6 +7,10 @@ import cz.cvut.fel.bouredan.chess.game.board.Tile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * King piece class. Mainly for getting possible moves this piece type.
+ * Also keeps castling moves.
+ */
 public class King extends Piece {
 
     private static final int[] POSSIBLE_MOVES_X = new int[]{-1, -1, -1, 0, 0, 1, 1, 1};

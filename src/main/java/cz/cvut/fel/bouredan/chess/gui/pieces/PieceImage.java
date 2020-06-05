@@ -7,6 +7,9 @@ import javafx.scene.image.Image;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * Keeps images of pieces
+ */
 public enum PieceImage {
     PAWN(PieceType.PAWN, "WP.png", "BP.png"),
     KING(PieceType.KING, "WK.png", "BK.png"),

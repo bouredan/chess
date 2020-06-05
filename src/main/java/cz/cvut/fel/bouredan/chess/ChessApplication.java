@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Logger;
 
+/**
+ * Gui runner application with main method
+ */
 public class ChessApplication extends Application {
 
     private static final Logger logger = Logger.getLogger(ChessApplication.class.getName());
@@ -19,6 +22,10 @@ public class ChessApplication extends Application {
         launch(args);
     }
 
+    /**
+     * Starts GUI application, loads logging properties and images.
+     * @param stage
+     */
     @Override
     public void start(Stage stage) {
         loadLoggingProperties();

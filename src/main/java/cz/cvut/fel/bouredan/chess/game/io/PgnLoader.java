@@ -17,12 +17,21 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Class for loading games from PGN files.
+ * @link http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm
+ */
 public class PgnLoader {
 
     private static final Pattern TURN_REGEX_PATTERN = Pattern.compile("\\s*(\\d+)\\.\\s+(\\S+)\\s+(\\S+)\\s*");
     private Game game;
     private int currentTurnNumber = 0;
 
+    /**
+     * Loads game from PGN file from this path.
+     * @param path path to PGN file
+     * @return constructed game according to the file
+     */
     public Game loadGame(Path path) {
         game = new Game();
         String fileContent = loadFileContent(path);

@@ -1,5 +1,8 @@
 package cz.cvut.fel.bouredan.chess.game;
 
+/**
+ * Enum for resolving game state and its PGN notation.
+ */
 public enum GameState {
     PLAYING("*"),
     WHITE_WON("1-0"),

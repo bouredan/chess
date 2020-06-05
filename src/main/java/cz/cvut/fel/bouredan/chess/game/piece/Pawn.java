@@ -6,6 +6,10 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Pawn piece class. Mainly for getting possible moves this piece type.
+ * En passant is not implemented here as it needs context of the game.
+ */
 public class Pawn extends Piece {
 
     private final int moveDirection;

@@ -11,12 +11,13 @@ import javafx.scene.layout.Pane;
 
 import java.util.List;
 
+/**
+ * Dialog for choosing which piece you want to promote to your pawn.
+ */
 public class PawnPromotionDialog extends Dialog<Piece> {
 
     public PawnPromotionDialog(boolean isWhitePromotion) {
         super();
-        // TODO find better way of loading piece images
-        getDialogPane().getStylesheets().add(getClass().getResource("/cz/cvut/fel/bouredan/chess/gui/chess.css").toExternalForm());
         setContentText("Promote pawn to: ");
         HBox hBox = new HBox();
 

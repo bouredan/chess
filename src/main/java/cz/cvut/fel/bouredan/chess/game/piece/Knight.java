@@ -6,6 +6,9 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Knight piece class. Mainly for getting possible moves this piece type.
+ */
 public class Knight extends Piece {
 
     private static final int[] x = new int[]{-2, -2, -1, -1, 1, 1, 2, 2};
