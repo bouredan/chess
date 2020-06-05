@@ -12,12 +12,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 /**
  * Class for saving games in standard PGN format.
  * @link http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm
  */
 public class PgnSaver {
+
+    private static final Logger logger = Logger.getLogger(PgnSaver.class.getName());
 
     /**
      * @param path save to file with this path
@@ -31,6 +34,7 @@ public class PgnSaver {
             writeGamePgn(writer, moveHistory, boardHistory, gameState);
             writer.close();
         } catch (IOException e) {
+            logger.severe("There was an error when saving game.");
             e.printStackTrace();
         }
     }

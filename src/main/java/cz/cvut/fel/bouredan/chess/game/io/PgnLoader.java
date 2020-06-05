@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +23,8 @@ import java.util.regex.Pattern;
  * @link http://www.saremba.de/chessgml/standards/pgn/pgn-complete.htm
  */
 public class PgnLoader {
+
+    private static final Logger logger = Logger.getLogger(PgnLoader.class.getName());
 
     private static final Pattern TURN_REGEX_PATTERN = Pattern.compile("\\s*(\\d+)\\.\\s+(\\S+)\\s+(\\S+)\\s*");
     private Game game;
@@ -42,6 +45,7 @@ public class PgnLoader {
         try {
             return Files.readString(path);
         } catch (IOException e) {
+            logger.severe("There was an error when loading game.");
             throw new RuntimeException(e);
         }
     }

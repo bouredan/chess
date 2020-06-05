@@ -48,7 +48,7 @@ public class ChessApplication extends Application {
 
     private void loadLoggingProperties() {
         URL loggingProperties = getClass().getResource("logging.properties");
-        if (loggingProperties != null) {
+        if (loggingProperties != null && System.getProperty("java.util.logging.config.file") == null) {
             logger.config("Logging.properties file found. Adding it as property.");
             System.setProperty("java.util.logging.config.file", loggingProperties.getFile());
         }

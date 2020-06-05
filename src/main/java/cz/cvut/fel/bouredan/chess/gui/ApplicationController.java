@@ -78,8 +78,12 @@ public class ApplicationController {
         }
 
         PgnLoader pgnLoader = new PgnLoader();
-        Game game = pgnLoader.loadGame(selectedFile.toPath());
-        startGame(game, false);
+        try {
+            Game game = pgnLoader.loadGame(selectedFile.toPath());
+            startGame(game, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -87,6 +91,9 @@ public class ApplicationController {
      */
     @FXML
     private void saveGame() {
+        if (boardController == null) {
+            return;
+        }
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save game file");
         fileChooser.setInitialDirectory(new File("saves/"));
