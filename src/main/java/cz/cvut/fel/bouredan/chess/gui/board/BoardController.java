@@ -33,9 +33,9 @@ public class BoardController {
     private List<Position> currentPossibleMoves = new ArrayList<>();
 
     /**
-     * @param boardView board view
-     * @param game played game
-     * @param chessClock clock to keep track of time on turn
+     * @param boardView         board view
+     * @param game              played game
+     * @param chessClock        clock to keep track of time on turn
      * @param gameStateConsumer game state consumer for handling end of game
      */
     public BoardController(BoardView boardView, Game game, ChessClock chessClock, Consumer<GameState> gameStateConsumer) {
@@ -138,16 +138,25 @@ public class BoardController {
         isGameEditable = false;
     }
 
+    /**
+     * saves game as a PGN file on this path
+     *
+     * @param path
+     */
     public void saveGameToPgnFile(Path path) {
         game.saveGameToPgnFile(path);
     }
 
+    /**
+     * @return current turn number
+     */
     public int getTurnNumber() {
         return game.getTurnNumber();
     }
 
     /**
      * Shows previous board
+     *
      * @return number of board index
      */
     public int displayPreviousBoard() {
@@ -157,6 +166,7 @@ public class BoardController {
 
     /**
      * Shows next board
+     *
      * @return number of board index
      */
     public int displayNextBoard() {

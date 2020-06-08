@@ -38,6 +38,7 @@ public class Game {
 
     /**
      * Constructs game with board board
+     *
      * @param board
      */
     public Game(Board board, Player whitePlayer, Player blackPlayer) {
@@ -75,13 +76,14 @@ public class Game {
         }
         nextTurn();
         if (!isHumanPlayerOnTurn()) {
-            playMove(((ComputerPlayer)playerOnTurn).generateRandomMove(board, getLastMove()));
+            playMove(((ComputerPlayer) playerOnTurn).generateRandomMove(board, getLastMove()));
         }
         return gameState = GameState.PLAYING;
     }
 
     /**
      * Creates move from from to to
+     *
      * @param from
      * @param to
      * @return move
@@ -92,6 +94,7 @@ public class Game {
 
     /**
      * Creates move from from to to, but with possibity that it is pawn promotion move
+     *
      * @param from
      * @param to
      * @param promotePawnTo promote pawn to this piece
@@ -134,7 +137,6 @@ public class Game {
     }
 
     /**
-     *
      * @param turnNumber
      * @return board from turn #turnNumber
      */
@@ -143,7 +145,6 @@ public class Game {
     }
 
     /**
-     *
      * @param turnNumber
      * @return move from turn #turnNumber
      */
@@ -152,7 +153,6 @@ public class Game {
     }
 
     /**
-     *
      * @return last played move in this game
      */
     public Move getLastMove() {
@@ -170,7 +170,6 @@ public class Game {
     }
 
     /**
-     *
      * @return turn number
      */
     public int getTurnNumber() {
@@ -186,7 +185,6 @@ public class Game {
     }
 
     /**
-     *
      * @return true if player on turn is human
      */
     public boolean isHumanPlayerOnTurn() {

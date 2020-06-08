@@ -63,6 +63,9 @@ public class ApplicationController {
         startGame(game, true);
     }
 
+    /**
+     * Starts new game with computer player, player side is chosen through dialog
+     */
     @FXML
     private void playAgainstComputer() {
         ChooseSideDialog chooseSideDialog = new ChooseSideDialog();
