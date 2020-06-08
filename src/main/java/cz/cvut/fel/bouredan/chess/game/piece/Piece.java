@@ -27,7 +27,7 @@ public abstract class Piece {
     /**
      * @param board current board
      * @param currentPosition position of this piece
-     * @return list of possible moves (does not check for checks or other context-like ruke)
+     * @return list of possible moves (does not check for checks or other context-like rules)
      */
     public abstract List<Position> getPossibleMoves(Board board, Position currentPosition);
 

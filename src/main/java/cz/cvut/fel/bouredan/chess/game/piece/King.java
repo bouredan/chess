@@ -20,6 +20,11 @@ public class King extends Piece {
         super(PieceType.KING, isWhite);
     }
 
+    /**
+     * @param board current board
+     * @param currentPosition position of this piece
+     * @return list of possible moves (does not check for checks or other context-like rules)
+     */
     @Override
     public List<Position> getPossibleMoves(Board board, Position currentPosition) {
         List<Position> possibleMoves = new ArrayList<>();
@@ -32,6 +37,12 @@ public class King extends Piece {
         return possibleMoves;
     }
 
+    /**
+     * Method for getting possible castling moves (does not check if context of game allows it)
+     * @param board current board
+     * @param currentPosition position of king
+     * @return possible castling moves
+     */
     public List<Position> getPossibleCastlingMoves(Board board, Position currentPosition) {
         if (hasMoved() || board.isTileAttacked(currentPosition, !isWhite())) {
             return new ArrayList<>();

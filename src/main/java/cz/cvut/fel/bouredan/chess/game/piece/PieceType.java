@@ -21,6 +21,11 @@ public enum PieceType {
         return notation;
     }
 
+    /**
+     * Returns PieceType by its PGN notation
+     * @param notation notation of game state
+     * @return PieceType
+     */
     public static PieceType getPieceTypeByNotation(String notation) {
         for (PieceType pieceType : values()) {
             if (pieceType.getNotation().equals(notation)) {

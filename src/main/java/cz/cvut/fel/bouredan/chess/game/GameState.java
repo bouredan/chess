@@ -16,6 +16,15 @@ public enum GameState {
         this.notation = notation;
     }
 
+    public static GameState getGameStateFromNotation(String notation) {
+        for (GameState gameState : values()) {
+            if (gameState.getNotation().equals(notation)) {
+                return gameState;
+            }
+        }
+        return null;
+    }
+
     public String getNotation() {
         return notation;
     }

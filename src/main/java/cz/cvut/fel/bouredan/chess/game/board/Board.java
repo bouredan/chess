@@ -2,6 +2,7 @@ package cz.cvut.fel.bouredan.chess.game.board;
 
 import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
+import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.Move;
 import cz.cvut.fel.bouredan.chess.game.piece.King;
 import cz.cvut.fel.bouredan.chess.game.piece.Piece;
@@ -34,6 +35,7 @@ public class Board {
 
     /**
      * Builds starting board with starting pieces as in GameSettings.buildDefaultStartingBoard().
+     *
      * @return starting board
      */
     public static Board buildStartingBoard() {
@@ -42,6 +44,7 @@ public class Board {
 
     /**
      * Builds board just with tiles, without pieces.
+     *
      * @return board without pieces
      */
     public static Board buildClearBoard() {
@@ -50,11 +53,12 @@ public class Board {
 
     /**
      * Performs move and handles special moves.
+     *
      * @param move move to perform
      * @return board after this move
      */
     public Board performMove(Move move) {
-        logger.info("Moving piece from " + move.from().getPositionNotation() + " to " + move.to().getPositionNotation());
+        logger.config("Moving piece from " + move.from().getPositionNotation() + " to " + move.to().getPositionNotation());
         if (move.isCastlingMove()) {
             return performCastlingMove(move);
         } else if (isEnPassantMove(move)) {
@@ -84,9 +88,10 @@ public class Board {
 
     /**
      * Returns list of possible moves from position, also takes in account special moves and checks.
-     * @param position from
+     *
+     * @param position      from
      * @param isWhiteOnTurn who is on turn
-     * @param previousMove for resolving en passant move
+     * @param previousMove  for resolving en passant move
      * @return
      */
     public List<Position> getPossibleMoves(Position position, boolean isWhiteOnTurn, Move previousMove) {
@@ -114,6 +119,7 @@ public class Board {
 
     /**
      * Return if is king of isWhite player in check.
+     *
      * @param isWhite is player white
      * @return true if king of the player is in check
      */
@@ -124,6 +130,7 @@ public class Board {
 
     /**
      * Returns if there are any opponent's pieces attacking position
+     *
      * @param attackedPosition
      * @param isWhiteAttacker
      * @return
@@ -134,6 +141,7 @@ public class Board {
 
     /**
      * Returns Tile at position
+     *
      * @param position
      * @return
      */
@@ -145,7 +153,6 @@ public class Board {
     }
 
     /**
-     *
      * @param position
      * @return true if there is a piece on this position
      */
@@ -155,7 +162,6 @@ public class Board {
     }
 
     /**
-     *
      * @param position
      * @param isWhite
      * @return true if there is a piece on this position and is of color isWhite
@@ -166,7 +172,6 @@ public class Board {
     }
 
     /**
-     *
      * @param position
      * @return true if tile is withing board and there is no piece on it
      */
@@ -176,7 +181,6 @@ public class Board {
     }
 
     /**
-     *
      * @param position
      * @param isWhite
      * @return true if tile is within board and is not occupied by a piece of color isWhite
@@ -186,8 +190,28 @@ public class Board {
         return tile != null && !tile.isOccupiedByColor(isWhite);
     }
 
+    public List<Move> getAllPossibleMoves(boolean isWhite, Move previousMove) {
+        List<Move> allPossibleMoves = new ArrayList<>();
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                Position position = new Position(x, y);
+                if (tileAt(position).isOccupiedByColor(isWhite)) {
+                    List<Position> possibleMovesFromPosition = getPossibleMoves(position, isWhite, previousMove);
+                    for (Position possibleMoveTo : possibleMovesFromPosition) {
+                        PieceType movedPiece = tileAt(position).getPiece().getPieceType();
+                        Piece promotePawnTo = null;
+                        if (Utils.isMovePawnPromotion(this, position, possibleMoveTo)) {
+                            promotePawnTo = Utils.createPieceByType(PieceType.QUEEN, isWhite);
+                        }
+                        allPossibleMoves.add(new Move(movedPiece, position, possibleMoveTo, promotePawnTo));
+                    }
+                }
+            }
+        }
+        return allPossibleMoves;
+    }
+
     /**
-     *
      * @param isWhite
      * @param previousMove for resolving en passant
      * @return true if player has any possible moves to make (checks if it is not stalemate)
@@ -205,7 +229,6 @@ public class Board {
     }
 
     /**
-     *
      * @param movedPieceType
      * @param moveTo
      * @param isWhite
@@ -223,7 +246,6 @@ public class Board {
     }
 
     /**
-     *
      * @return deep copy of 2D array of tiles
      */
     public Tile[][] getTiles() {

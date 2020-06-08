@@ -12,6 +12,7 @@ module cz.cvut.fel.bouredan.chess {
     exports cz.cvut.fel.bouredan.chess.game;
     exports cz.cvut.fel.bouredan.chess.game.board;
     exports cz.cvut.fel.bouredan.chess.game.piece;
+    exports cz.cvut.fel.bouredan.chess.game.player;
     exports cz.cvut.fel.bouredan.chess.gui;
     exports cz.cvut.fel.bouredan.chess.gui.board;
 }

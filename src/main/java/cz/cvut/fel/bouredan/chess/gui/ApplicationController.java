@@ -9,15 +9,14 @@ import cz.cvut.fel.bouredan.chess.gui.board.BoardController;
 import cz.cvut.fel.bouredan.chess.gui.board.BoardView;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static cz.cvut.fel.bouredan.chess.common.GameSettings.CHESS_CLOCK_SECONDS;
@@ -62,6 +61,17 @@ public class ApplicationController {
     private void startNewGame() {
         Game game = new Game();
         startGame(game, true);
+    }
+
+    @FXML
+    private void playAgainstComputer() {
+        ChooseSideDialog chooseSideDialog = new ChooseSideDialog();
+        Optional<Boolean> result = chooseSideDialog.showAndWait();
+        if (result.isEmpty()) {
+            return;
+        }
+        Game game = Game.createComputerGame(result.get());
+        startGame(game, false);
     }
 
     /**

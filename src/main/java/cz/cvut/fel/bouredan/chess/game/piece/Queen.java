@@ -15,6 +15,11 @@ public class Queen extends Piece {
         super(PieceType.QUEEN, isWhite);
     }
 
+    /**
+     * @param board current board
+     * @param currentPosition position of this piece
+     * @return list of possible moves (does not check for checks or other context-like rules)
+     */
     @Override
     public List<Position> getPossibleMoves(Board board, Position currentPosition) {
         List<Position> possibleMoves = new ArrayList<>();

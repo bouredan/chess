@@ -14,6 +14,11 @@ public class Bishop extends Piece {
         super(PieceType.BISHOP, isWhite);
     }
 
+    /**
+     * @param board current board
+     * @param currentPosition position of this piece
+     * @return list of possible moves (does not check for checks or other context-like rules)
+     */
     @Override
     public List<Position> getPossibleMoves(Board board, Position currentPosition) {
         return collectPossibleDiagonalMoves(board, currentPosition);

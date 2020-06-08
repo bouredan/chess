@@ -1,4 +1,4 @@
-package cz.cvut.fel.bouredan.chess.game;
+package cz.cvut.fel.bouredan.chess.game.player;
 
 /**
  * Represents player
@@ -23,5 +23,9 @@ public class Player {
 
     public boolean isWhite() {
         return isWhite;
+    }
+
+    public boolean isHumanPlayer() {
+        return true;
     }
 }

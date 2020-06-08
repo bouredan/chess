@@ -53,9 +53,13 @@ public class PgnLoader {
         game = new Game();
         Matcher matcher = TURN_REGEX_PATTERN.matcher(pgnGameString);
         while (matcher.find()) {
-            GameState gameState = playTurn(matcher.group(1), matcher.group(2), matcher.group(3));
-            if (gameState != GameState.PLAYING) {
-                break;
+            try {
+                GameState gameState = playTurn(matcher.group(1), matcher.group(2), matcher.group(3));
+                if (gameState != GameState.PLAYING) {
+                    return game;
+                }
+            } catch (EndOfGameException endOfGameException) {
+                return game;
             }
         }
         return game;
@@ -65,10 +69,14 @@ public class PgnLoader {
         checkTurnNumber(turnNumberText);
         // White move
         GameState gameState = game.playMove(resolveMove(whiteMoveText, true));
-        if (gameState != GameState.PLAYING) {
-            return gameState;
-        }
         // Black move
+        if (gameState != GameState.PLAYING) {
+            throw new EndOfGameException(gameState);
+        }
+        gameState = GameState.getGameStateFromNotation(blackMoveText);
+        if (gameState != null) {
+            throw new EndOfGameException(gameState);
+        }
         return game.playMove(resolveMove(blackMoveText, false));
     }
 
@@ -162,5 +170,19 @@ public class PgnLoader {
 
     private PieceType resolveMovedPieceType(char character) {
         return Character.isUpperCase(character) ? PieceType.getPieceTypeByNotation(String.valueOf(character)) : PieceType.PAWN;
+    }
+
+    private class EndOfGameException extends RuntimeException {
+
+        private final GameState gameState;
+
+        private EndOfGameException(GameState gameState) {
+            super();
+            this.gameState = gameState;
+        }
+
+        private GameState getGameState() {
+            return gameState;
+        }
     }
 }

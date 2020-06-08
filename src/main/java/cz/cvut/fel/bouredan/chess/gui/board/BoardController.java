@@ -7,6 +7,7 @@ import cz.cvut.fel.bouredan.chess.game.Game;
 import cz.cvut.fel.bouredan.chess.game.GameState;
 import cz.cvut.fel.bouredan.chess.game.Move;
 import cz.cvut.fel.bouredan.chess.game.piece.Piece;
+import cz.cvut.fel.bouredan.chess.game.player.ComputerPlayer;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -61,6 +62,12 @@ public class BoardController {
         if (chessClock != null) {
             chessClock.startClock();
         }
+        if (!game.isHumanPlayerOnTurn()) {
+            ComputerPlayer computerPlayer = new ComputerPlayer(true);
+            Move move = computerPlayer.generateRandomMove(game.getBoard(), null);
+            currentClickedPosition = move.from();
+            handleMoveTo(move.to());
+        }
     }
 
     /**
@@ -97,8 +104,8 @@ public class BoardController {
         }
         GameState gameState = game.playMove(move);
         boardView.displayBoard(game.getBoard());
-        currentBoardShown++;
-        markNewLastMove(move);
+        currentBoardShown = game.getTurnNumber() - 1;
+        markNewLastMove(game.getLastMove());
         if (chessClock != null) {
             chessClock.switchClock();
         }

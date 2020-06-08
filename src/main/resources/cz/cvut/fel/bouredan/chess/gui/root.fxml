@@ -9,6 +9,7 @@
     <top>
         <HBox styleClass="menu">
             <Button onAction="#startNewGame" styleClass="menu-item">Start new game</Button>
+            <Button onAction="#playAgainstComputer" styleClass="menu-item">Play against computer</Button>
             <Button onAction="#loadGame" styleClass="menu-item">Load game</Button>
             <Button onAction="#saveGame" styleClass="menu-item">Save game</Button>
         </HBox>

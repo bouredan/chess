@@ -5,6 +5,8 @@ import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.io.PgnSaver;
 import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
+import cz.cvut.fel.bouredan.chess.game.player.ComputerPlayer;
+import cz.cvut.fel.bouredan.chess.game.player.Player;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -31,19 +33,25 @@ public class Game {
      * Constructs new starting game with standard pieces
      */
     public Game() {
-        this(Board.buildStartingBoard());
+        this(Board.buildStartingBoard(), new Player("Player 1", true), new Player("Player 2", false));
     }
 
     /**
      * Constructs game with board board
      * @param board
      */
-    public Game(Board board) {
-        this.whitePlayer = new Player("Player 1", true);
-        this.blackPlayer = new Player("Player 2", false);
+    public Game(Board board, Player whitePlayer, Player blackPlayer) {
+        this.whitePlayer = whitePlayer;
+        this.blackPlayer = blackPlayer;
         this.playerOnTurn = whitePlayer;
         this.board = board;
         this.boardHistory.add(board);
+    }
+
+    public static Game createComputerGame(boolean isHumanPlayerWhite) {
+        Player whitePlayer = isHumanPlayerWhite ? new Player("Human player", true) : new ComputerPlayer(true);
+        Player blackPlayer = isHumanPlayerWhite ? new ComputerPlayer(false) : new Player("Human player", false);
+        return new Game(Board.buildStartingBoard(), whitePlayer, blackPlayer);
     }
 
     /**
@@ -66,6 +74,9 @@ public class Game {
             return gameState = GameState.STALEMATE;
         }
         nextTurn();
+        if (!isHumanPlayerOnTurn()) {
+            playMove(((ComputerPlayer)playerOnTurn).generateRandomMove(board, getLastMove()));
+        }
         return gameState = GameState.PLAYING;
     }
 
@@ -172,6 +183,14 @@ public class Game {
     public void saveGameToPgnFile(Path path) {
         PgnSaver pgnSaver = new PgnSaver();
         pgnSaver.saveGameToPgnFile(path, moveHistory, boardHistory, gameState);
+    }
+
+    /**
+     *
+     * @return true if player on turn is human
+     */
+    public boolean isHumanPlayerOnTurn() {
+        return playerOnTurn.isHumanPlayer();
     }
 
     private void nextTurn() {
