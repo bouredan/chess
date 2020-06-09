@@ -3,6 +3,7 @@ Made by Daniel Bourek.
 
 ## Features
 * Two player game (with all chess rules)
+* Play against computer (randomly generated moves)
 * Saving and loading games in PGN format
 * Full game history (scrolling through previous moves)
 * Chess clock
@@ -16,6 +17,7 @@ You can move pieces on board by selecting one (which marks possible moves) and t
 
 Top buttons is the menu:
 * Start new game - starts new game with chess clock set to 10min.
+* Play against computer - starts new game against computer (randomly generated moves)
 * Load game - loads game from PGN file
 * Save game - saves currently opened game to PGN file
 
@@ -34,6 +36,7 @@ JVM option -Djava.util.logging.config.file="".
 * Java
 * JavaFX with FXML
 * CSS
+* JUnit 5
 
 ## Architecture
 The project consists of 3 main packages under the root package cz.cvut.fel.bouredan.chess
