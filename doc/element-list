@@ -5,6 +5,7 @@ cz.cvut.fel.bouredan.chess.game
 cz.cvut.fel.bouredan.chess.game.board
 cz.cvut.fel.bouredan.chess.game.io
 cz.cvut.fel.bouredan.chess.game.piece
+cz.cvut.fel.bouredan.chess.game.player
 cz.cvut.fel.bouredan.chess.gui
 cz.cvut.fel.bouredan.chess.gui.assets
 cz.cvut.fel.bouredan.chess.gui.board
