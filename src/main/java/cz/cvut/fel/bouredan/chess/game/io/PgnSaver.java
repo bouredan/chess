@@ -73,13 +73,16 @@ public class PgnSaver {
             stringBuilder.append(move.from().getFile());
         } else if (possibleFromPositions.size() > 1) {
             possibleFromPositions.remove(move.from());
-            Optional<Position> positionInSameFile = possibleFromPositions.stream().filter(position -> position.y() == move.from().y()).findFirst();
-            Optional<Position> positionInSameRank = possibleFromPositions.stream().filter(position -> position.x() == move.from().x()).findFirst();
-            if (positionInSameFile.isPresent()) {
+            Optional<Position> positionInSameRank = possibleFromPositions.stream().filter(position -> position.y() == move.from().y()).findFirst();
+            Optional<Position> positionInSameFile = possibleFromPositions.stream().filter(position -> position.x() == move.from().x()).findFirst();
+            if (positionInSameRank.isPresent()) {
                 stringBuilder.append(move.from().getFile());
             }
-            if (positionInSameRank.isPresent()) {
+            if (positionInSameFile.isPresent()) {
                 stringBuilder.append(move.from().getRank());
+            }
+            if (positionInSameFile.isEmpty() && positionInSameRank.isEmpty()) {
+                stringBuilder.append(move.from().getFile());
             }
         }
         return stringBuilder
