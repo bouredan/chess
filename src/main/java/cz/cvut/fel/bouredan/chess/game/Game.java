@@ -146,7 +146,7 @@ public class Game {
 
     /**
      * @param turnNumber
-     * @return move from turn #turnNumber
+     * @return move from turn #turnNumber - 1
      */
     public Move getMove(int turnNumber) {
         return moveHistory.get(turnNumber);

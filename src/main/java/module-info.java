@@ -7,10 +7,12 @@ module cz.cvut.fel.bouredan.chess {
     opens cz.cvut.fel.bouredan.chess to javafx.fxml, javafx.graphics;
     opens cz.cvut.fel.bouredan.chess.gui to javafx.fxml, javafx.graphics;
     opens cz.cvut.fel.bouredan.chess.gui.board to javafx.fxml, javafx.graphics;
+    opens cz.cvut.fel.bouredan.chess.game.io;
 
     exports cz.cvut.fel.bouredan.chess.common;
     exports cz.cvut.fel.bouredan.chess.game;
     exports cz.cvut.fel.bouredan.chess.game.board;
+    exports cz.cvut.fel.bouredan.chess.game.io;
     exports cz.cvut.fel.bouredan.chess.game.piece;
     exports cz.cvut.fel.bouredan.chess.game.player;
     exports cz.cvut.fel.bouredan.chess.gui;

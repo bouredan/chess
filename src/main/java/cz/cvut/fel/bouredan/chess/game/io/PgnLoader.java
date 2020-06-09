@@ -37,7 +37,7 @@ public class PgnLoader {
      */
     public Game loadGame(Path path) {
         String fileContent = loadFileContent(path);
-        return playOutGame(fileContent);
+        return loadGameFromString(fileContent);
     }
 
     private String loadFileContent(Path path) {
@@ -49,7 +49,7 @@ public class PgnLoader {
         }
     }
 
-    public Game playOutGame(String pgnGameString) {
+    public Game loadGameFromString(String pgnGameString) {
         game = new Game();
         Matcher matcher = TURN_REGEX_PATTERN.matcher(pgnGameString);
         while (matcher.find()) {

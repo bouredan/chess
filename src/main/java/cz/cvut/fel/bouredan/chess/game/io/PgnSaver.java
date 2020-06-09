@@ -57,6 +57,7 @@ public class PgnSaver {
     private void writeMovePgn(BufferedWriter writer, Move move, Board boardBeforeMove) throws IOException {
         if (move.isCastlingMove()) {
             writer.write(move.isLongCastling() ? "O-O-O" : "O-O");
+            return;
         }
         boolean isWhite = boardBeforeMove.tileAt(move.from()).isOccupiedByColor(true);
         List<Position> possibleFromPositions = boardBeforeMove.getPossibleFromPositions(move.getMovedPieceType(), move.to(), isWhite);

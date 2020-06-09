@@ -95,10 +95,10 @@ public class BoardController {
     }
 
     /**
-     * @param moveTo moves current clicked position to handleMoveTO
+     * @param moveTo moves current clicked position to handleMoveTo
      */
     private void handleMoveTo(Position moveTo) {
-        Move move = createMove(moveTo);
+        Move move = createMove(currentClickedPosition, moveTo);
         if (move == null) {
             return;
         }
@@ -113,19 +113,20 @@ public class BoardController {
     }
 
     /**
-     * @param moveTo move to
+     * @param from move from
+     * @param to   move to
      * @return new move
      */
-    private Move createMove(Position moveTo) {
-        if (Utils.isMovePawnPromotion(game.getBoard(), currentClickedPosition, moveTo)) {
+    private Move createMove(Position from, Position to) {
+        if (Utils.isMovePawnPromotion(game.getBoard(), from, to)) {
             logger.info("Pawn promotion.");
             Piece chosenPromotePieceTo = showPawnPromotionSelect();
             if (chosenPromotePieceTo != null) {
-                return game.createMove(currentClickedPosition, moveTo, chosenPromotePieceTo);
+                return game.createMove(from, to, chosenPromotePieceTo);
             }
             return null;
         }
-        return game.createMove(currentClickedPosition, moveTo);
+        return game.createMove(from, to);
     }
 
     /**

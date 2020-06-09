@@ -1,16 +1,23 @@
 package cz.cvut.fel.bouredan.chess.common;
 
+import cz.cvut.fel.bouredan.chess.ChessApplication;
 import cz.cvut.fel.bouredan.chess.game.board.Board;
 import cz.cvut.fel.bouredan.chess.game.board.Tile;
 import cz.cvut.fel.bouredan.chess.game.piece.*;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * Utils for working with chess model
  */
 public class Utils {
 
+    private static final Logger logger = Logger.getLogger(Utils.class.getName());
+
     /**
-     *
      * @param isWhite is player white
      * @return "White" for true, "Black" for false
      */
@@ -70,5 +77,20 @@ public class Utils {
         return (moveTo.y() == 0 || moveTo.y() == 7) &&
                 tileFrom.isOccupied() &&
                 tileFrom.getPiece().getPieceType() == PieceType.PAWN;
+    }
+
+    public static void loadLoggingProperties() {
+        URL loggingProperties = ChessApplication.class.getResource("logging.properties");
+        String propertyValue = System.getProperty("java.util.logging.config.file");
+        if (propertyValue != null || loggingProperties == null) {
+            return;
+        }
+        System.setProperty("java.util.logging.config.file", loggingProperties.getFile());
+        try {
+            LogManager.getLogManager().readConfiguration();
+            logger.config("Logging.properties file was found and successfully read.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
