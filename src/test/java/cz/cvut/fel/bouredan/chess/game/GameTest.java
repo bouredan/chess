@@ -2,13 +2,14 @@ package cz.cvut.fel.bouredan.chess.game;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.common.Utils;
-import cz.cvut.fel.bouredan.chess.game.board.Tile;
 import cz.cvut.fel.bouredan.chess.game.io.PgnLoader;
 import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static cz.cvut.fel.bouredan.chess.common.Utils.createPieceByType;
+import static cz.cvut.fel.bouredan.chess.common.Utils.getPositionFromMoveNotation;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -21,27 +22,6 @@ public class GameTest {
     @BeforeAll
     public static void loadLoggingProperties() {
         Utils.loadLoggingProperties();
-    }
-
-    /**
-     * Simple test of checking positions of few pieces after new game
-     */
-    @Test
-    public void newGame_piecesPositions_piecesPlacedCorrectly() {
-        // Arrange
-        Game game = new Game();
-
-        // Act
-        Tile whiteQueenTile = game.getBoard().tileAt(new Position(3, 0));
-        Tile blackRookTile = game.getBoard().tileAt(new Position(7, 7));
-
-        // Assert
-        assertAll(
-                () -> assertTrue(whiteQueenTile.isOccupiedByColor(true)),
-                () -> assertEquals(PieceType.QUEEN, whiteQueenTile.getPiece().getPieceType()),
-                () -> assertTrue(blackRookTile.isOccupiedByColor(false)),
-                () -> assertEquals(PieceType.ROOK, blackRookTile.getPiece().getPieceType())
-        );
     }
 
     /**
@@ -61,6 +41,20 @@ public class GameTest {
         assertTrue(game.getBoard().tileAt(new Position(7, 4)).isOccupiedByColor(true));
     }
 
+    @Test
+    public void makeMove_makeSameMoveTwice_moveIsNull() {
+        // Arrange
+        Game game = new Game();
+
+        // Act
+        Move move = game.createMove(getPositionFromMoveNotation("e2"), getPositionFromMoveNotation("e4"));
+        game.playMove(move);
+        move = game.createMove(getPositionFromMoveNotation("e2"), getPositionFromMoveNotation("e4"));
+
+        // Assert
+        assertNull(move);
+    }
+
     /**
      * Test of making promotion move which results in checkmate
      */
@@ -69,9 +63,9 @@ public class GameTest {
         // Arrange
         PgnLoader pgnLoader = new PgnLoader();
         Game game = pgnLoader.loadGameFromString(PROMOTION_CHECKMATE_PGN);
-        Position from = Utils.getPositionFromMoveNotation("g7");
-        Position to = Utils.getPositionFromMoveNotation("h8");
-        Piece knight = Utils.createPieceByType(PieceType.KNIGHT, true);
+        Position from = getPositionFromMoveNotation("g7");
+        Position to = getPositionFromMoveNotation("h8");
+        Piece knight = createPieceByType(PieceType.KNIGHT, true);
         Move move = game.createMove(from, to, knight);
 
         // Act
@@ -89,7 +83,7 @@ public class GameTest {
         // Arrange
         PgnLoader pgnLoader = new PgnLoader();
         Game game = pgnLoader.loadGameFromString(PROMOTION_CHECKMATE_PGN);
-        Move expectedMove = new Move(PieceType.PAWN, Utils.getPositionFromMoveNotation("e4"), Utils.getPositionFromMoveNotation("f5"));
+        Move expectedMove = new Move(PieceType.PAWN, getPositionFromMoveNotation("e4"), getPositionFromMoveNotation("f5"));
 
         // Act
         Move move = game.getMove(4);
