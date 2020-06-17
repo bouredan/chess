@@ -13,6 +13,9 @@ import static cz.cvut.fel.bouredan.chess.common.Utils.getPositionFromMoveNotatio
 import static org.junit.jupiter.api.Assertions.*;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
+/**
+ * Board tests realized with PowerMockito
+ */
 @RunWith(PowerMockRunner.class)
 public class BoardMockitoTest {
 

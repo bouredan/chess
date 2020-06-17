@@ -37,6 +37,7 @@ JVM option -Djava.util.logging.config.file="".
 * JavaFX with FXML
 * CSS
 * JUnit 5
+* Mockito and PowerMockito
 
 ## Architecture
 The project consists of 3 main packages under the root package cz.cvut.fel.bouredan.chess

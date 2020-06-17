@@ -14,6 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+/**
+ * Tests of game model with Mockito
+ */
 public class GameMockitoTest {
 
     /**
