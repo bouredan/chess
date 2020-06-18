@@ -90,12 +90,12 @@ public class PgnLoaderSaverTest {
     @Test
     void saveGame_loadGameAndThenSaveTheGame_filesMatch(@TempDir Path tempDir) throws IOException {
         // Arrange
+        PgnLoader pgnLoader = new PgnLoader();
         Path originalGamePath = tempDir.resolve("originalGame.pgn");
         Path savedGamePath = tempDir.resolve("savedGame.pgn");
         Files.writeString(originalGamePath, CASTLING_GAME_PGN);
 
         // Act
-        PgnLoader pgnLoader = new PgnLoader();
         Game game = pgnLoader.loadGame(originalGamePath);
         game.saveGameToPgnFile(savedGamePath);
 
