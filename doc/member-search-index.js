@@ -48,10 +48,6 @@ memberSearchIndex = [{
     "c": "Board",
     "l": "buildClearBoard()"
 }, {
-    "p": "cz.cvut.fel.bouredan.chess.common",
-    "c": "GameSettings",
-    "l": "buildDefaultStartingBoard()"
-}, {
     "p": "cz.cvut.fel.bouredan.chess.game.board",
     "c": "Board",
     "l": "buildStartingBoard()"
@@ -123,6 +119,11 @@ memberSearchIndex = [{
 }, {
     "p": "cz.cvut.fel.bouredan.chess.common",
     "c": "Position",
+    "l": "equals(Object)",
+    "url": "equals(java.lang.Object)"
+}, {
+    "p": "cz.cvut.fel.bouredan.chess.game.board",
+    "c": "Board",
     "l": "equals(Object)",
     "url": "equals(java.lang.Object)"
 }, {
@@ -221,11 +222,6 @@ memberSearchIndex = [{
     "p": "cz.cvut.fel.bouredan.chess.game.board",
     "c": "Tile",
     "l": "getPosition()"
-}, {
-    "p": "cz.cvut.fel.bouredan.chess.common",
-    "c": "Utils",
-    "l": "getPositionFromMoveNotation(String)",
-    "url": "getPositionFromMoveNotation(java.lang.String)"
 }, {
     "p": "cz.cvut.fel.bouredan.chess.common",
     "c": "Position",
@@ -577,6 +573,11 @@ memberSearchIndex = [{
     "c": "Position",
     "l": "Position(int, int)",
     "url": "%3Cinit%3E(int,int)"
+}, {
+    "p": "cz.cvut.fel.bouredan.chess.common",
+    "c": "Position",
+    "l": "Position(String)",
+    "url": "%3Cinit%3E(java.lang.String)"
 }, {
     "p": "cz.cvut.fel.bouredan.chess.gui.assets",
     "c": "GuiSettings",

@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests of loading and saving games through PgnLoader and PgnSaver respectively
  */
-public class PgnLoaderSaverTest {
+public class PgnIoIntegrationTest {
 
     private static final String WHITE_WON_PGN = "1. e4 e5 2. Qh5 Nc6 3. Bc4 Nd4 4. Qxf7# 1-0";
     private static final String CASTLING_GAME_PGN = "1. d4 d5 2. Bg5 e5 3. Qd3 c5 4. Nc3 exd4 5. Qf3 Bf5 6. e4 Bd6 7. Bb5+ Nc6 8. Bxd8 Bf8 9. e5 Kxd8 10. e6 fxe6 11. Qxf5 exf5 12. Nxd5 Nb4 13. O-O-O *";

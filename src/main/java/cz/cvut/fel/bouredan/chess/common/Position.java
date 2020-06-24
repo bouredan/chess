@@ -11,13 +11,24 @@ public class Position {
     private final int x, y;
 
     /**
-     *
      * @param x number of file
      * @param y number of rank
      */
     public Position(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    /**
+     * Constructs position from its notation (eg. e4, d1, a4)
+     *
+     * @param notation standard chess position notation (eg. e4)
+     */
+    public Position(String notation) {
+        char firstChar = notation.charAt(0);
+        char secondChar = notation.charAt(1);
+        this.x = (int) firstChar - 'a';
+        this.y = Character.getNumericValue(secondChar) - 1;
     }
 
     /**

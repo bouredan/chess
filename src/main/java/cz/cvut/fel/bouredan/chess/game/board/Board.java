@@ -1,15 +1,13 @@
 package cz.cvut.fel.bouredan.chess.game.board;
 
-import cz.cvut.fel.bouredan.chess.common.GameSettings;
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.common.Utils;
 import cz.cvut.fel.bouredan.chess.game.Move;
-import cz.cvut.fel.bouredan.chess.game.piece.King;
-import cz.cvut.fel.bouredan.chess.game.piece.Piece;
-import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
+import cz.cvut.fel.bouredan.chess.game.piece.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -25,7 +23,6 @@ public class Board {
 
     private final Tile[][] tiles;
 
-
     /**
      * @param tiles 2D array of board tiles, expected to be 8x8 (BOARD_SIZE).
      */
@@ -34,12 +31,24 @@ public class Board {
     }
 
     /**
-     * Builds starting board with starting pieces as in GameSettings.buildDefaultStartingBoard().
+     * Builds default starting board with pieces
      *
-     * @return starting board
+     * @return board in starting position
      */
     public static Board buildStartingBoard() {
-        return GameSettings.buildDefaultStartingBoard();
+        logger.info("Building default starting board.");
+        Tile[][] tiles = new Tile[BOARD_SIZE][BOARD_SIZE];
+
+        buildStartingBoardSide(tiles, 1, 0, true);
+        buildStartingBoardSide(tiles, 6, 7, false);
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                if (tiles[x][y] == null) {
+                    tiles[x][y] = new Tile(new Position(x, y));
+                }
+            }
+        }
+        return new Board(tiles);
     }
 
     /**
@@ -344,5 +353,51 @@ public class Board {
             }
         }
         return tiles;
+    }
+
+    private static void buildStartingBoardSide(Tile[][] tiles, int pawnRank, int otherPiecesRank, boolean isWhite) {
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            tiles[x][pawnRank] = new Tile(new Position(x, pawnRank), new Pawn(isWhite));
+        }
+        tiles[0][otherPiecesRank] = new Tile(new Position(0, otherPiecesRank), new Rook(isWhite));
+        tiles[1][otherPiecesRank] = new Tile(new Position(1, otherPiecesRank), new Knight(isWhite));
+        tiles[2][otherPiecesRank] = new Tile(new Position(2, otherPiecesRank), new Bishop(isWhite));
+        tiles[3][otherPiecesRank] = new Tile(new Position(3, otherPiecesRank), new Queen(isWhite));
+        tiles[4][otherPiecesRank] = new Tile(new Position(4, otherPiecesRank), new King(isWhite));
+        tiles[5][otherPiecesRank] = new Tile(new Position(5, otherPiecesRank), new Bishop(isWhite));
+        tiles[6][otherPiecesRank] = new Tile(new Position(6, otherPiecesRank), new Knight(isWhite));
+        tiles[7][otherPiecesRank] = new Tile(new Position(7, otherPiecesRank), new Rook(isWhite));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+        Board board = (Board) o;
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
+                Position position = new Position(x, y);
+                Tile tile = tileAt(position);
+                Tile otherBoardTile = board.tileAt(position);
+                if (!Objects.equals(tile.getPosition(), otherBoardTile.getPosition())) {
+                    return false;
+                }
+                if (tile.getPiece() == null || otherBoardTile.getPiece() == null) {
+                    if (tile.getPiece() != null || otherBoardTile.getPiece() != null) {
+                        return false;
+                    }
+                } else if (!Objects.equals(tile.getPiece().getPieceType(), otherBoardTile.getPiece().getPieceType())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

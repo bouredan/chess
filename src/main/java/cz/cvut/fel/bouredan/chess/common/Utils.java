@@ -26,19 +26,6 @@ public class Utils {
     }
 
     /**
-     * @param notation standard chess position notation (eg. e4)
-     * @return Position according to the notation
-     */
-    public static Position getPositionFromMoveNotation(String notation) {
-        char firstChar = notation.charAt(0);
-        char secondChar = notation.charAt(1);
-        int x = (int) firstChar - 'a';
-        int y = Character.getNumericValue(secondChar) - 1;
-
-        return new Position(x, y);
-    }
-
-    /**
      * Creates Piece class from passed arguments
      *
      * @param pieceType piece type

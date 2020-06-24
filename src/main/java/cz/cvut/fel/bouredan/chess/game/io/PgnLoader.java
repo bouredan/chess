@@ -124,7 +124,7 @@ public class PgnLoader {
             }
             moveText = moveText.substring(1);
         }
-        return Utils.getPositionFromMoveNotation(moveText);
+        return new Position(moveText);
     }
 
     private Position resolveMoveFromPosition(String moveText, PieceType movedPieceType, Board board, Position moveTo, boolean isWhite) {
@@ -152,7 +152,7 @@ public class PgnLoader {
             return foundPosition.get();
         } else if (moveText.length() == 4) {
             String positionFromText = moveText.substring(2);
-            return Utils.getPositionFromMoveNotation(positionFromText);
+            return new Position(positionFromText);
         } else {
             throw new UnsupportedOperationException("Not recognized move text " + moveText);
         }

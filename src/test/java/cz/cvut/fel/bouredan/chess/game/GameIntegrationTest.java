@@ -2,20 +2,26 @@ package cz.cvut.fel.bouredan.chess.game;
 
 import cz.cvut.fel.bouredan.chess.common.Position;
 import cz.cvut.fel.bouredan.chess.common.Utils;
+import cz.cvut.fel.bouredan.chess.game.board.Tile;
 import cz.cvut.fel.bouredan.chess.game.io.PgnLoader;
 import cz.cvut.fel.bouredan.chess.game.piece.Piece;
 import cz.cvut.fel.bouredan.chess.game.piece.PieceType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import static cz.cvut.fel.bouredan.chess.common.Utils.createPieceByType;
-import static cz.cvut.fel.bouredan.chess.common.Utils.getPositionFromMoveNotation;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 /**
- * Tests of Game model
+ * Tests of game model with Mockito
  */
-public class GameTest {
+public class GameIntegrationTest {
 
     private static final String PROMOTION_CHECKMATE_PGN = "1. e4 e5 2. f4 f5 3. exf5 e4 4. Qh5+ g6 5. fxg6 h6 6. g7 Ke7 7. Qe5+ Kf7";
 
@@ -47,9 +53,9 @@ public class GameTest {
         Game game = new Game();
 
         // Act
-        Move move = game.createMove(getPositionFromMoveNotation("e2"), getPositionFromMoveNotation("e4"));
+        Move move = game.createMove(new Position("e2"), new Position("e4"));
         game.playMove(move);
-        move = game.createMove(getPositionFromMoveNotation("e2"), getPositionFromMoveNotation("e4"));
+        move = game.createMove(new Position("e2"), new Position("e4"));
 
         // Assert
         assertNull(move);
@@ -63,8 +69,8 @@ public class GameTest {
         // Arrange
         PgnLoader pgnLoader = new PgnLoader();
         Game game = pgnLoader.loadGameFromString(PROMOTION_CHECKMATE_PGN);
-        Position from = getPositionFromMoveNotation("g7");
-        Position to = getPositionFromMoveNotation("h8");
+        Position from = new Position("g7");
+        Position to = new Position("h8");
         Piece knight = createPieceByType(PieceType.KNIGHT, true);
         Move move = game.createMove(from, to, knight);
 
@@ -83,7 +89,7 @@ public class GameTest {
         // Arrange
         PgnLoader pgnLoader = new PgnLoader();
         Game game = pgnLoader.loadGameFromString(PROMOTION_CHECKMATE_PGN);
-        Move expectedMove = new Move(PieceType.PAWN, getPositionFromMoveNotation("e4"), getPositionFromMoveNotation("f5"));
+        Move expectedMove = new Move(PieceType.PAWN, new Position("e4"), new Position("f5"));
 
         // Act
         Move move = game.getMove(4);
@@ -95,4 +101,44 @@ public class GameTest {
                 () -> assertEquals(expectedMove.to(), move.to())
         );
     }
+
+    /**
+     * Test of trying to create a move that is not possible now
+     */
+    @Test
+    public void createMove_moveIsNotInPossible_moveIsNull() {
+        // Arrange
+        Game game = spy(new Game());
+        doReturn(new ArrayList<>()).when(game).getPossibleMoves(any());
+
+        // Act
+        Move move = game.createMove(any(), any());
+
+        // Assert
+        assertNull(move);
+    }
+
+    /**
+     * Test of checking positions of few pieces after new game using Mockito
+     */
+    @Test
+    public void newGame_piecesPositions_piecesPlacedCorrectly() {
+        // Arrange
+        PgnLoader pgnLoaderMock = Mockito.mock(PgnLoader.class);
+        when(pgnLoaderMock.loadGame(any())).thenReturn(new Game());
+
+        // Act
+        Game game = pgnLoaderMock.loadGame(Paths.get("random"));
+        Tile whiteQueenTile = game.getBoard().tileAt(new Position(3, 0));
+        Tile blackRookTile = game.getBoard().tileAt(new Position(7, 7));
+
+        // Assert
+        assertAll(
+                () -> assertTrue(whiteQueenTile.isOccupiedByColor(true)),
+                () -> assertEquals(PieceType.QUEEN, whiteQueenTile.getPiece().getPieceType()),
+                () -> assertTrue(blackRookTile.isOccupiedByColor(false)),
+                () -> assertEquals(PieceType.ROOK, blackRookTile.getPiece().getPieceType())
+        );
+    }
+
 }
